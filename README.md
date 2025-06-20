@@ -1,0 +1,134 @@
+#  DialogPlugin – Custom Dialog Wrapper (Minecraft 1.21+)
+
+**DialogAPI** is a developer-focused API for easily testing and extending Minecraft's new native dialogs via the `ServerboundCustomClickActionPacket`.  
+It offers a full Kotlin-based wrapper for creating rich, interactive dialogs with buttons, inputs, and custom actions.
+
+> ❗ **Note:** This API is intended as a dev utility – maintenance is not guaranteed.  
+> Feel free to fork, adapt, and build your own features on top of it.
+
+---
+
+## Features
+
+-  Kotlin-first builder pattern
+-  Support for all Vanilla dialog types (MultiAction, List, Links, Notice)
+-  Custom actions via Mojang’s native packet system
+-  Input reading (text, number, multiline)
+-  Item & message-based dialog bodies
+-  Easy integration with Bukkit events
+
+---
+
+## How to Use
+
+### Building a Simple Dialog
+
+```kotlin
+val dialogData = DialogDataBuilder()
+    .title(Component.text("Test Menu"))
+    .externalTitle(Component.text("Menu Test"))
+    .canCloseWithEscape(true)
+    .addBody(PlainMessageDialogBody(100, Component.literal("Hello from Dialog!")))
+    .build() 
+   ```
+   
+### Adding Buttons with Actions
+
+ ```kotlin
+val resourceLocation = ResourceLocation(namespace, path) // Custom Api's resource location
+ val testButton = Button(
+    ButtonDataBuilder()
+        .label(Component.text("Kill Me"))
+        .width(100)
+        .build(),
+    Optional.of(Action(resourceLocation))
+) 
+```
+### MultiAction Dialog
+ ```kotlin
+val dialog = MultiActionDialogBuilder()
+    .data(dialogData)
+    .columns(1)
+    .exitButton(exitButton)
+    .addButton(testButton)
+    .build() 
+   ```
+### Opening the Dialog
+ ```kotlin
+val holder = Holder.Direct(dialog.toNMS())
+(craftPlayer.handle as ServerPlayer).openDialog(holder) 
+```
+
+### Creating Custom Actions
+#### Registering an Action
+ ```kotlin
+val killPlayerNamespace = "dialog"
+val killPlayerPath = "damage_player"
+val killPlayerKey = ResourceLocation(killPlayerNamespace, killPlayerPath)
+try {
+  CustomKeyRegistry.register(
+    killPlayerKey,
+    KillPlayerAction,
+    PlayerReturnValueReader
+  )
+} catch (e: IllegalStateException) {
+  player.sendMessage("Note: Kill player key was already registered: ${e.message}")
+}
+```
+####  Action Implementation
+ ```kotlin
+object KillPlayerAction: CustomAction() {
+    override fun task(player: Player, plugin: DialogPlugin) {
+        dynamicListener?.start()
+        player.damage(5.0)
+
+        object : BukkitRunnable() {
+            override fun run() {
+                dynamicListener?.stop()
+            }
+        }.runTaskLater(plugin, 20L)
+    }
+
+  // Custom listeners are not required for CustomActions, but its an option 
+    override fun listener(): Listener {
+        return object : Listener {
+            @EventHandler
+            fun onPlayerDeath(event: PlayerDeathEvent) {
+                event.player.sendMessage("You died during a dialog!")
+            }
+        }
+    }
+} 
+```
+####  Input Readers
+
+```kotlin
+object PlayerReturnValueReader : InputReader {
+    override fun task(player: Player, value: Any?) {
+        player.sendMessage("Received input: $value")
+    }
+}
+```
+####  Creating Input Fields (_There are more than shown_)
+```kotlin
+val stringInput = TextInputBuilder()
+    .label(Component.text("Your name"))
+    .initial("Player")
+    .maxLength(300)
+    .multiline(MultilineOptions(5, 10))
+    .build()
+
+val numberInput = NumberRangeInputBuilder()
+    .label(Component.text("Pick a number"))
+    .rangeInfo(RangeInfo(1.0f, 10.0f))
+    .labelFormat("format")
+    .build()
+```
+
+
+* Extending the Plugin
+  * You can add more actions, readers, and even UI components by following the builder and registry patterns shown above.
+
+- Contributions
+  * Pull requests are welcome. 
+  * Feel free to adapt the system or use it as the API for your own dialog-based plugin!
