@@ -32,9 +32,9 @@ dependencies {
 }
 ```
 ### Add the PlayerConnectionStatus to your plugin
-This is a listener which registers the players onto the system that detects the clicking on dialogs
+This is a listener that registers the players onto the system that detects the ActionButton clicking on dialogs
 
-If this listener is not registered, then the CustomActions and InputReaders won't be executed, but dialogs created with the API can still be opend to a player
+If this listener is not registered, then the CustomActions and InputReaders won't be executed, but dialogs created with the API can still be opened to a player
 ```kotlin 
 fun onEnable() { 
     server.pluginManager.registerEvents(PlayerConnectionStatus(this),this)
