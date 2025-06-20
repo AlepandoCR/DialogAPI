@@ -28,7 +28,7 @@ repositories {
 }
 
 dependencies {
-  implementation("com.github.AlepandoCR:DialogAPI:v1.0.0")
+  implementation("com.github.AlepandoCR:DialogAPI:v1.0.1")
 }
 ```
 ### Add the PlayerConnectionStatus to your plugin
