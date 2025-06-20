@@ -1,4 +1,4 @@
-#  DialogPlugin – Custom Dialog Wrapper (Minecraft 1.21+)
+#  DialogAPI – Custom Dialog API (Minecraft 1.21.6)
 
 **DialogAPI** is a developer-focused API for easily testing and extending Minecraft's new native dialogs via the `ServerboundCustomClickActionPacket`.  
 It offers a full Kotlin-based wrapper for creating rich, interactive dialogs with buttons, inputs, and custom actions.
