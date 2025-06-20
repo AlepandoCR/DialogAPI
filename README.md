@@ -21,6 +21,17 @@ It offers a full Kotlin-based wrapper for creating rich, interactive dialogs wit
 
 ## How to Use
 
+### Adding the API
+```kotlin 
+repositories {
+  maven("https://jitpack.io")
+}
+
+dependencies {
+  implementation("com.github.AlepandoCR:DialogAPI:v1.0.0")
+}
+```
+
 ### Building a Simple Dialog
 
 ```kotlin
