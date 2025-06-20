@@ -146,7 +146,7 @@ val numberInput = NumberRangeInputBuilder()
 ```
 
 
-* Extending the Plugin
+* Extending the API
   * You can add more actions, readers, and even UI components by following the builder and registry patterns shown above.
 
 - Contributions
