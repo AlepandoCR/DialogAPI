@@ -13,7 +13,7 @@ import org.bukkit.plugin.Plugin
  *
  * @property plugin The plugin instance.
  */
-class PlayerConnectionStatus(private val plugin: Plugin): Listener {
+internal class PlayerConnectionStatus(private val plugin: Plugin): Listener {
 
     /**
      * Handles the [PlayerJoinEvent].
