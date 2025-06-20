@@ -37,7 +37,6 @@ internal object PacketSniffer {
         val connection: Connection = nmsPlayer.connection.connection
         val channel = connection.channel
 
-        // Avoid double injection
         if (channel.pipeline().get(handlerName) != null) return
 
         val handler = object : ChannelDuplexHandler() {

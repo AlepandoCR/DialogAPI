@@ -8,40 +8,46 @@ It offers a full Kotlin-based wrapper for creating rich, interactive dialogs wit
 
 ---
 
-## Features
-
--  Kotlin-first builder pattern
--  Support for all Vanilla dialog types (MultiAction, List, Links, Notice)
--  Custom actions via Mojang’s native packet system
--  Input reading (text, number, multiline)
--  Item & message-based dialog bodies
--  Easy integration with Bukkit events
+> ## Features
+>
+> -  Kotlin-first builder pattern
+> -  Support for all Vanilla dialog types (MultiAction, List, Links, Notice)
+> -  Custom actions via Mojang’s native packet system
+> -  Input reading (text, number, multiline)
+> -  Item & message-based dialog bodies
+> -  Easy integration with Bukkit events
 
 ---
 
 ## How to Use
 
-### Adding the API
-```kotlin 
-repositories {
-  maven("https://jitpack.io")
-}
+> ### Adding the API
+> ```kotlin 
+> repositories {
+>   maven("https://jitpack.io")
+> }
+>
+> dependencies {
+ >  implementation("com.github.AlepandoCR:DialogAPI:v1.0.3")
+> }
+> ```
 
-dependencies {
-  implementation("com.github.AlepandoCR:DialogAPI:v1.0.3")
+### 🔧 API Initialization
+
+Call this function to initialize the API internals and register the required packet listeners.
+
+This enables features like `CustomActions` and `InputReaders`, which rely on packet-level data.
+> ⚠️ If you don't call this, dialogs will still open and render correctly, but input-related features **will not work**.
+
+```kotlin
+fun onEnable() {
+  DialogApi.initialize(this)
 }
 ```
-### Initialize the API
-This registers a listener that registers the players onto the system that detects the ActionButton clicking on dialogs
 
-If this listener is not registered, then the CustomActions and InputReaders won't be executed, but dialogs created with the API can still be opened to a player
-```kotlin 
-fun onEnable() { 
-    DialogApi.initialize(this)
-}
-```
+## Building a Simple Dialog
 
-### Building a Simple Dialog
+---
 
 ```kotlin
 val dialogData = DialogDataBuilder()
@@ -73,14 +79,29 @@ val dialog = MultiActionDialogBuilder()
     .addButton(testButton)
     .build() 
    ```
-### Opening the Dialog
- ```kotlin
-val holder = Holder.Direct(dialog.toNMS())
-(craftPlayer.handle as ServerPlayer).openDialog(holder) 
-```
+> ### 🪟 Opening a Dialog
+> The method to open a dialog depends on whether you're using **Kotlin** or **Java**:
+>
+> #### Kotlin
+> If you're coding in Kotlin, use the extension function:
+> ```kotlin
+> player.openDialog(dialog)
+> ```
+>
+> #### Java
+> If you're using Java, use the utility method provided:
+> ```java
+> PlayerOpener.INSTANCE.openDialog(player, dialog);
+> ```
+>
+> ℹ Both methods work identically under the hood — use the one that fits your language of choice.
 
-### Creating Custom Actions
-#### Registering an Action
+
+## Creating Custom Actions
+
+---
+
+### Registering an Action
  ```kotlin
 val killPlayerNamespace = "dialog"
 val killPlayerPath = "damage_player"
@@ -95,7 +116,7 @@ try {
   player.sendMessage("Note: Kill player key was already registered: ${e.message}")
 }
 ```
-####  Action Implementation
+###  Action Implementation
  ```kotlin
 object KillPlayerAction: CustomAction() {
     override fun task(player: Player, plugin: DialogPlugin) {
@@ -120,7 +141,7 @@ object KillPlayerAction: CustomAction() {
     }
 } 
 ```
-####  Input Readers
+###  Input Readers
 
 ```kotlin
 object PlayerReturnValueReader : InputReader {
@@ -129,7 +150,7 @@ object PlayerReturnValueReader : InputReader {
     }
 }
 ```
-####  Creating Input Fields (_There are more than shown_)
+###  Creating Input Fields (_There are more than shown_)
 ```kotlin
 val stringInput = TextInputBuilder()
     .label(Component.text("Your name"))
