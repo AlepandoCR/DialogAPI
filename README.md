@@ -31,6 +31,15 @@ dependencies {
   implementation("com.github.AlepandoCR:DialogAPI:v1.0.0")
 }
 ```
+### Add the PlayerConnectionStatus to your plugin
+This is a listener which registers the players onto the system that detects the clicking on dialogs
+
+If this listener is not registered, then the CustomActions and InputReaders won't be executed, but dialogs created with the API can still be opend to a player
+```kotlin 
+fun onEnable() { 
+    server.pluginManager.registerEvents(PlayerConnectionStatus(this),this)
+}
+```
 
 ### Building a Simple Dialog
 
