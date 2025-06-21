@@ -28,7 +28,7 @@ It offers a full Kotlin-based wrapper for creating rich, interactive dialogs wit
 > }
 >
 > dependencies {
- >  implementation("com.github.AlepandoCR:DialogAPI:v1.0.3")
+ >  implementation("com.github.AlepandoCR:DialogAPI:v1.0.5")
 > }
 > ```
 
@@ -55,7 +55,6 @@ val dialogData = DialogDataBuilder()
     .externalTitle(Component.text("Menu Test"))
     .canCloseWithEscape(true)
     .addBody(PlainMessageDialogBody(100, Component.text("Hello from Dialog!")))
-    .plugin(plugin)
     .build() 
    ```
    
@@ -157,12 +156,14 @@ val stringInput = TextInputBuilder()
     .label(Component.text("Your name"))
     .initial("Player")
     .maxLength(300)
+    .key("text_input_key")
     .multiline(MultilineOptions(5, 10))
     .build()
 
 val numberInput = NumberRangeInputBuilder()
     .label(Component.text("Pick a number"))
     .rangeInfo(RangeInfo(1.0f, 10.0f))
+    .key("text_input_key")
     .labelFormat("format")
     .build()
 ```
