@@ -26,4 +26,6 @@ object DialogAPI {
         pm.registerEvents(PlayerConnectionStatus(plugin), plugin)
         pm.registerEvents(ServerStatusListener(plugin),plugin)
     }
+
+
 }

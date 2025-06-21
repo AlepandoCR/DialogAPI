@@ -61,7 +61,7 @@ val dialogData = DialogDataBuilder()
 ### Adding Buttons with Actions
 
  ```kotlin
-val resourceLocation = ResourceLocation(namespace, path) // Custom Api's resource location
+val resourceLocation = ResourceLocation(namespace, path) // Custom API's resource location
  val testButton = Button(
     ButtonDataBuilder()
         .label(Component.text("Kill Me"))

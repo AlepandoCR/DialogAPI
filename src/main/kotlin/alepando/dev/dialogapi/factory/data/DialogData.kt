@@ -6,6 +6,7 @@ import alepando.dev.dialogapi.factory.input.Input
 import net.minecraft.network.chat.Component
 import net.minecraft.server.dialog.CommonDialogData
 import net.minecraft.server.dialog.DialogAction
+import org.bukkit.plugin.Plugin
 import java.util.*
 
 /** Type alias for the NMS (Net Minecraft Server) DialogBody class. */
@@ -29,14 +30,15 @@ typealias NMSInput = net.minecraft.server.dialog.Input
  * @property dialogBody A list of [DialogBody] elements that make up the content of the dialog.
  * @property inputs A list of [Input] elements allowing user interaction.
  */
-class DialogData internal constructor( // Constructor is internal, only called by DialogDataBuilder
+class DialogData internal constructor(
     private val title: Component,
     private val externalTitle: Optional<Component>,
     private val canCloseWithEscape: Boolean,
     private val pause: Boolean,
     private val afterAction: DialogAction,
     private val dialogBody: List<DialogBody<*>>,
-    private val inputs: List<Input<*>>
+    private val inputs: List<Input<*>>,
+    private val plugin: Plugin
 ): Wrapper<CommonDialogData> {
 
     /**
@@ -54,8 +56,7 @@ class DialogData internal constructor( // Constructor is internal, only called b
         for (input in inputs) {
             val nmsInput = input.toNMS()
             if(nmsInput is NMSInputControl) {
-                // TODO: The key "fuchibol" seems like a placeholder and should be configurable or derived.
-                val aux = NMSInput("fuchibol",nmsInput)
+                val aux = NMSInput(plugin.name,nmsInput)
                 list.add(aux)
             }
         }
@@ -66,7 +67,7 @@ class DialogData internal constructor( // Constructor is internal, only called b
         val list = mutableListOf<NMSDialogBody>()
         for (body in dialogBody) {
             val nmsBody = body.toNMS()
-            if(nmsBody is NMSDialogBody) { // Ensure it's the correct NMS type, though toNMS should guarantee this
+            if(nmsBody is NMSDialogBody) {
                 list.add(nmsBody)
             }
         }
