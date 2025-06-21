@@ -70,7 +70,7 @@ val resourceLocation = ResourceLocation(namespace, path) // Custom API's resourc
         .label(Component.text("Kill Me"))
         .width(100)
         .build(),
-    Optional.of(Action(resourceLocation))
+    Optional.of(KeyedAction(resourceLocation))
 ) 
 ```
 ### MultiAction Dialog
@@ -155,20 +155,23 @@ object PlayerReturnValueReader : InputReader {
 ```
 ###  Creating Input Fields (_There are more than shown_)
 ```kotlin
-val stringInput = TextInputBuilder()
-    .label(Component.text("Your name"))
-    .initial("Player")
-    .maxLength(300)
-    .key("text_input_key")
-    .multiline(MultilineOptions(5, 10))
-    .build()
+val booleanInput = NumberRangeInputBuilder()
+  .label(Component.text("Input"))
+  .key("boolean_test")
+  .width(150)
+  .rangeInfo(RangeInfo(1.0f,10.0f))
+  .labelFormat("")
+  .build()
 
-val numberInput = NumberRangeInputBuilder()
-    .label(Component.text("Pick a number"))
-    .rangeInfo(RangeInfo(1.0f, 10.0f))
-    .key("text_input_key")
-    .labelFormat("format")
-    .build()
+val stringInput = TextInputBuilder()
+  .label(Component.text("Input"))
+  .width(256)
+  .key("text_test")
+  .initial("")
+  .labelVisible(true)
+  .maxLength(300)
+  .multiline(MultilineOptions(10,20))
+  .build()
 ```
 
 
