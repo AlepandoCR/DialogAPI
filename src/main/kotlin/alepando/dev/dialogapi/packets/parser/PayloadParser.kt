@@ -18,9 +18,9 @@ internal object PayloadParser {
      * @return The extracted value, or null if the payload is empty, not a [CompoundTag],
      *         or does not contain a recognizable NBT tag.
      */
-    fun getValues(packet: ServerboundCustomClickActionPacket): Map<*,String>? {
+    fun getValues(packet: ServerboundCustomClickActionPacket): Map<String,*>? {
         val payloadHolder = packet.payload
-        val list = mutableMapOf<Any, String>()
+        val list = mutableMapOf<String, Any>()
         if (payloadHolder.isEmpty) return null
 
         val compound = payloadHolder.get() as? CompoundTag ?: return null
@@ -30,30 +30,10 @@ internal object PayloadParser {
             val type = getTypedValue(tag) ?: continue
             val data = type.get() ?: continue
 
-            list[data] = key
+            list[key] = data
         }
 
         return list
-    }
-
-    /**
-     * Extracts the key-value pair from the payload of a [ServerboundCustomClickActionPacket].
-     * The payload is expected to be a [CompoundTag] with a single entry.
-     * This function is currently marked with `@Suppress("unused")`.
-     *
-     * @param packet The packet to parse.
-     * @return A [Pair] containing the key and the extracted value, or null if parsing fails.
-     */
-    @Suppress("unused")
-    fun getValueWithKey(packet: ServerboundCustomClickActionPacket): Pair<String, Any?>? {
-        val payloadHolder = packet.payload
-        if (payloadHolder.isEmpty) return null
-
-        val compound = payloadHolder.get() as? CompoundTag ?: return null
-        val key = compound.keySet().firstOrNull() ?: return null
-        val tag = compound.get(key) ?: return null
-
-        return key to getTypedValue(tag)
     }
 
     /**

@@ -22,5 +22,5 @@ interface InputReader {
      *              This is provided as a convenience, but implementations can choose to parse the packet directly.
      *              The type of this value depends on the data sent by the client (e.g., String, Int, Boolean).
      */
-    fun task(player: Player, values: Map<*,String>?)
+    fun task(player: Player, values: Map<String,*>?)
 }

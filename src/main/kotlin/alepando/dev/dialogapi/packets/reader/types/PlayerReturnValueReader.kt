@@ -20,7 +20,7 @@ object PlayerReturnValueReader: InputReader {
      * @param player The Bukkit [Player] who interacted with the dialog.
      * @param values The value extracted from the packet's payload.
      */
-    override fun task(player: Player, values: Map<*,String>?) {
+    override fun task(player: Player, values: Map<String,*>?) {
         values ?: return
         for (key in values.keys) {
             val value = values[key]
