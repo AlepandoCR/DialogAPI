@@ -6,6 +6,9 @@ It offers a full Kotlin-based wrapper for creating rich, interactive dialogs wit
 > ❗ **Note:** This API is intended as a dev utility – maintenance is not guaranteed.  
 > Feel free to fork, adapt, and build your own features on top of it.
 
+> ⚠️ Please consider using Paper's API (Currently on testing) 
+
+
 ---
 
 > ## Features
