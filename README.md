@@ -155,9 +155,9 @@ object PlayerReturnValueReader : InputReader {
 ```
 ###  Creating Input Fields (_There are more than shown_)
 ```kotlin
-val booleanInput = NumberRangeInputBuilder()
+  val numberRangeInput = NumberRangeInputBuilder()
   .label(Component.text("Input"))
-  .key("boolean_test")
+  .key("number_input")
   .width(150)
   .rangeInfo(RangeInfo(1.0f,10.0f))
   .labelFormat("")
