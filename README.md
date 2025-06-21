@@ -206,10 +206,23 @@ object PlayerReturnValueReader: InputReader {
 
 ```
 
+> ## Looking for **MORE** examples?
+>
+> Check out the companion project [**DialogApiTest**](https://github.com/AlepandoCR/DialogApiTest)  
+> It’s a sample plugin that demonstrates how to use DialogAPI in a real Paper 1.21.6 server, including:
+>
+> - Custom dialogs with buttons
+> - Action registration
+> - Input reading
+> - Kotlin-based builder syntax
+>
+> Perfect for learning, testing, or kickstarting your own dialog plugin!
 
-* Extending the API
-  * You can add more actions, readers, and even UI components by following the builder and registry patterns shown above.
 
-- Contributions
-  * Pull requests are welcome. 
-  * Feel free to adapt the system or use it as the API for your own dialog-based plugin!
+
+> # Extending the API
+>   * You can add more actions, readers, and even UI components by following the builder and registry patterns shown above.
+>
+> - Contributions 
+>  * Pull requests are welcome. 
+>  * Feel free to adapt the system or use it as the API for your own dialog-based plugin!
