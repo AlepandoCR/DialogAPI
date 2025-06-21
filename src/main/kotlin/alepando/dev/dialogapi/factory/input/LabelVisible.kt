@@ -9,5 +9,5 @@ import net.minecraft.network.chat.Component
  * @param T The type of the NMS input control this input wraps.
  * @property labelVisible Whether the label is visible.
  */
-abstract class LabelVisible<T>(label: Component, with: Int, val labelVisible: Boolean) : SizeableInput<T>(label, with) {
+abstract class LabelVisible<T>(label: Component, key: String, with: Int, val labelVisible: Boolean) : SizeableInput<T>(label,key, with) {
 }

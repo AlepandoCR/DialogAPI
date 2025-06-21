@@ -12,7 +12,7 @@ import java.util.*
  *
  * @property resourceLocation The resource location identifying this action.
  */
-class Action(
+class KeyedAction(
     private val resourceLocation: ResourceLocation
 ):Wrapper<Optional<Action>> {
     /**

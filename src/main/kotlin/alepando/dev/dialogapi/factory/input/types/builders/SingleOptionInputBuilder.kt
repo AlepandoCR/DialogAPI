@@ -3,7 +3,6 @@ package alepando.dev.dialogapi.factory.input.types.builders
 import alepando.dev.dialogapi.factory.input.options.Entry
 import alepando.dev.dialogapi.factory.input.types.SingleOptionInput
 import alepando.dev.dialogapi.util.ComponentTranslator
-import net.minecraft.network.chat.Component
 
 /**
  * Builder class for creating [SingleOptionInput] instances.
@@ -13,6 +12,9 @@ class SingleOptionInputBuilder {
     private var with: Int = 100
     private var entries: MutableList<Entry> = mutableListOf()
     private var labelVisible: Boolean = true
+    private var key: String = "not_defined"
+
+    fun key(key: String) = apply { this.key = key }
 
     /** Sets the label for the single option input. */
     fun label(label: AdventureComponent) = apply { this.label = label }
@@ -34,6 +36,6 @@ class SingleOptionInputBuilder {
      * @return The created [SingleOptionInput].
      */
     fun build(): SingleOptionInput {
-        return SingleOptionInput(ComponentTranslator.toNMS(label), with, entries, labelVisible)
+        return SingleOptionInput(ComponentTranslator.toNMS(label), with,key, entries, labelVisible)
     }
 }

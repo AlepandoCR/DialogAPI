@@ -18,11 +18,12 @@ class TextInput(
     label: Component,
     with: Int,
     labelVisible: Boolean,
+    key: String,
     private val initial: String,
     private val maxLength: Int,
     private val multiline: MultilineOptions
 
-) : LabelVisible<TextInput>(label, with, labelVisible), Wrapper<TextInput> {
+) : LabelVisible<TextInput>(label,key, with, labelVisible), Wrapper<TextInput> {
     /**
      * Converts this text input to its NMS equivalent.
      * @return The NMS [TextInput].

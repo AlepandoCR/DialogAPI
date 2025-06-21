@@ -17,8 +17,9 @@ typealias NMSEntry = net.minecraft.server.dialog.input.SingleOptionInput.Entry
 class SingleOptionInput(
     label: Component,
     with: Int,
+    key: String,
     private val entries: List<Entry>, labelVisible: Boolean
-) : LabelVisible<NMSSingleOptionInput>(label, with, labelVisible), Wrapper<NMSSingleOptionInput> {
+) : LabelVisible<NMSSingleOptionInput>(label,key, with, labelVisible), Wrapper<NMSSingleOptionInput> {
 
     /**
      * Converts this single option input to its NMS equivalent.

@@ -10,6 +10,6 @@ import net.minecraft.network.chat.Component
  * @property label The label displayed for this input.
  */
 abstract class Input<T>(
-    val label: Component
-) : Wrapper<T> {
-}
+    val label: Component,
+    val key: String
+) : Wrapper<T>

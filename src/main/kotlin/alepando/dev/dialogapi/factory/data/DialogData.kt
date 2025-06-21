@@ -2,10 +2,10 @@ package alepando.dev.dialogapi.factory.data
 
 import alepando.dev.dialogapi.body.DialogBody
 import alepando.dev.dialogapi.factory.Wrapper
+import alepando.dev.dialogapi.factory.actions.DialogAction
 import alepando.dev.dialogapi.factory.input.Input
 import net.minecraft.network.chat.Component
 import net.minecraft.server.dialog.CommonDialogData
-import net.minecraft.server.dialog.DialogAction
 import org.bukkit.plugin.Plugin
 import java.util.*
 
@@ -38,7 +38,6 @@ class DialogData internal constructor(
     private val afterAction: DialogAction,
     private val dialogBody: List<DialogBody<*>>,
     private val inputs: List<Input<*>>,
-    private val plugin: Plugin
 ): Wrapper<CommonDialogData> {
 
     /**
@@ -48,15 +47,16 @@ class DialogData internal constructor(
      * @return The NMS [CommonDialogData] object.
      */
     override fun toNMS(): CommonDialogData {
-        return CommonDialogData(title,externalTitle,canCloseWithEscape,pause,afterAction,nmsBodyList(),nmsInputList())
+        return CommonDialogData(title,externalTitle,canCloseWithEscape,pause,afterAction.nmsDialogAction,nmsBodyList(),nmsInputList())
     }
 
     private fun nmsInputList():MutableList<NMSInput>{
         val list = mutableListOf<NMSInput>()
         for (input in inputs) {
             val nmsInput = input.toNMS()
+            val key = input.key
             if(nmsInput is NMSInputControl) {
-                val aux = NMSInput(plugin.name,nmsInput)
+                val aux = NMSInput(key,nmsInput)
                 list.add(aux)
             }
         }

@@ -1,12 +1,10 @@
 package alepando.dev.dialogapi.factory.data
 
 import alepando.dev.dialogapi.body.DialogBody
+import alepando.dev.dialogapi.factory.actions.DialogAction
 import alepando.dev.dialogapi.factory.input.Input
 import alepando.dev.dialogapi.util.ComponentTranslator
 import net.kyori.adventure.text.Component
-import net.minecraft.server.dialog.DialogAction
-import org.bukkit.plugin.Plugin
-import java.lang.IllegalStateException
 import java.util.*
 
 /**
@@ -21,12 +19,6 @@ class DialogDataBuilder {
     private var afterAction: DialogAction = DialogAction.CLOSE
     private var dialogBody: MutableList<DialogBody<*>> = mutableListOf()
     private var inputs: MutableList<Input<*>> = mutableListOf()
-    private var plugin: Plugin? = null
-
-    fun setPlugin(plugin: Plugin): DialogDataBuilder{
-        this.plugin = plugin
-        return this
-    }
 
     /**
      * Sets the main title for the dialog.
@@ -127,7 +119,6 @@ class DialogDataBuilder {
      */
     fun build(): DialogData {
 
-        plugin ?: throw IllegalStateException("Plugin can not be null")
 
         return DialogData(
             ComponentTranslator.toNMS(title),
@@ -137,7 +128,6 @@ class DialogDataBuilder {
             afterAction,
             dialogBody,
             inputs,
-            plugin!!
         )
     }
 }

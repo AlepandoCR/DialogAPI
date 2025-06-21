@@ -12,6 +12,9 @@ class NumberRangeInputBuilder {
     private var with: Int = 100
     private var labelFormat: String = ""
     private var rangeInfo: RangeInfo? = null
+    private var key: String = "not_defined"
+
+    fun key(key: String) = apply { this.key = key }
 
     /** Sets the label for the number range input. */
     fun label(label: AdventureComponent) = apply { this.label = label }
@@ -34,6 +37,6 @@ class NumberRangeInputBuilder {
 
         rangeInfo ?: throw IllegalStateException("RangeInfo must be set for NumberRangeInput.")
 
-        return NumberRangeInput(ComponentTranslator.toNMS(label), with, labelFormat, rangeInfo!!)
+        return NumberRangeInput(ComponentTranslator.toNMS(label), with,key, labelFormat, rangeInfo!!)
     }
 }

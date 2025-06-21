@@ -15,9 +15,10 @@ import net.minecraft.server.dialog.input.NumberRangeInput
 class NumberRangeInput(
     label: Component,
     with: Int,
+    key: String,
     private val labelFormat: String,
     private val rangeInfo: RangeInfo
-) : SizeableInput<NumberRangeInput>(label, with), Wrapper<NumberRangeInput> {
+) : SizeableInput<NumberRangeInput>(label,key, with), Wrapper<NumberRangeInput> {
     /**
      * Converts this number range input to its NMS equivalent.
      * @return The NMS [NumberRangeInput].

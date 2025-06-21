@@ -14,10 +14,11 @@ import net.minecraft.server.dialog.input.BooleanInput
  */
 class BooleanInput(
     label: Component,
+    key: String,
     private val initial: Boolean,
     private val onTrue: String,
     private val onFalse: String
-    ) : Input<BooleanInput>(label), Wrapper<BooleanInput> {
+    ) : Input<BooleanInput>(label,key), Wrapper<BooleanInput> {
     /**
      * Converts this boolean input to its NMS equivalent.
      * @return The NMS [BooleanInput].

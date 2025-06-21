@@ -3,7 +3,6 @@ package alepando.dev.dialogapi.factory.input.types.builders
 import alepando.dev.dialogapi.factory.input.options.MultilineOptions
 import alepando.dev.dialogapi.factory.input.types.TextInput
 import alepando.dev.dialogapi.util.ComponentTranslator
-import net.minecraft.network.chat.Component
 
 /**
  * Builder class for creating [TextInput] instances.
@@ -15,6 +14,9 @@ class TextInputBuilder {
     private var initial: String = ""
     private var maxLength: Int = 255
     private var multiline: MultilineOptions? = null
+    private var key: String = "not_defined"
+
+    fun key(key: String) = apply { this.key = key }
 
     /** Sets the label for the text input. */
     fun label(label: AdventureComponent) = apply { this.label = label }
@@ -41,6 +43,6 @@ class TextInputBuilder {
      */
     fun build(): TextInput {
         multiline ?: throw IllegalStateException("Multiline options must be defined for TextInput.")
-        return TextInput(ComponentTranslator.toNMS(label), with, labelVisible, initial, maxLength, multiline!!)
+        return TextInput(ComponentTranslator.toNMS(label), with, labelVisible,key, initial, maxLength, multiline!!)
     }
 }
