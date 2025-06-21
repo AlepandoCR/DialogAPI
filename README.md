@@ -31,7 +31,7 @@ It offers a full Kotlin-based wrapper for creating rich, interactive dialogs wit
 > }
 >
 > dependencies {
- >  implementation("com.github.AlepandoCR:DialogAPI:v1.0.5")
+ >  implementation("com.github.AlepandoCR:DialogAPI:v1.0.8")
 > }
 > ```
 
