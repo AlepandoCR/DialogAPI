@@ -147,31 +147,63 @@ object KillPlayerAction: CustomAction() {
 ###  Input Readers
 
 ```kotlin
-object PlayerReturnValueReader : InputReader {
-    override fun task(player: Player, value: Any?) {
-        player.sendMessage("Received input: $value")
+object PlayerReturnValueReader: InputReader {
+  override fun task(player: Player, values: Map<String,*>?) {
+    values ?: return
+    for (key in values.keys) { // Keys are set when building the input as shown below this block
+      val value = values[key] // Have to get the value from the key
+      player.sendMessage("$key: $value") // Value comes already parsed according to the input's type
     }
+
+  }
 }
 ```
-###  Creating Input Fields (_There are more than shown_)
+###  Creating Input Fields
 ```kotlin
   val numberRangeInput = NumberRangeInputBuilder()
   .label(Component.text("Input"))
   .key("number_input")
   .width(150)
   .rangeInfo(RangeInfo(1.0f,10.0f))
-  .labelFormat("")
+  .labelFormat("") 
   .build()
 
-val stringInput = TextInputBuilder()
-  .label(Component.text("Input"))
-  .width(256)
-  .key("text_test")
-  .initial("")
-  .labelVisible(true)
-  .maxLength(300)
-  .multiline(MultilineOptions(10,20))
-  .build()
+  val stringInput = TextInputBuilder()
+    .label(Component.text("Input"))
+    .width(256)
+    .key("text_test")
+    .initial("")
+    .labelVisible(true)
+    .maxLength(300)
+    .multiline(MultilineOptions(10,20))
+    .build()
+  
+  val singleOptionInput = SingleOptionInputBuilder()
+    .label(Component.text("option"))
+    .key("single_input")
+    .width(100)
+    .labelVisible(true)
+    .addEntry(
+      EntryBuilder()
+        .initial(true) // No more than one initial
+        .id("test_entry")
+        .display(Component.text("test_entry"))
+        .build()
+    )
+    .addEntry(
+      EntryBuilder() // Initial is false by default so no need to set it false
+        .id("entry_test")
+        .display(Component.text("entry_test"))
+        .build()
+    )
+    .build()
+  
+  val booleanInput = BooleanInputBuilder()
+    .label(Component.text("boolean test"))
+    .key("boolean_test")
+    .initial(false) // Initial value of the input
+    .build()
+
 ```
 
 
