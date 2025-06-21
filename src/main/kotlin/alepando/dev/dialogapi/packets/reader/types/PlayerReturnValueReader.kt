@@ -18,9 +18,14 @@ object PlayerReturnValueReader: InputReader {
      * representation of the extracted value.
      *
      * @param player The Bukkit [Player] who interacted with the dialog.
-     * @param value The value extracted from the packet's payload.
+     * @param values The value extracted from the packet's payload.
      */
-    override fun task(player: Player, value: Any?) {
-        player.sendMessage("In: $value")
+    override fun task(player: Player, values: Map<*,String>?) {
+        values ?: return
+        for (key in values.keys) {
+            val value = values[key]
+            player.sendMessage("$key: $value")
+        }
+
     }
 }

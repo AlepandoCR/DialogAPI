@@ -18,9 +18,9 @@ interface InputReader {
      * This method should contain the logic to handle the data sent by the client.
      *
      * @param player The Bukkit [Player] who interacted with the dialog.
-     * @param value The value extracted from the packet's payload by [PayloadParser.getValue].
+     * @param values The value extracted from the packet's payload by [PayloadParser.getValues].
      *              This is provided as a convenience, but implementations can choose to parse the packet directly.
      *              The type of this value depends on the data sent by the client (e.g., String, Int, Boolean).
      */
-    fun task(player: Player, value: Any?)
+    fun task(player: Player, values: Map<*,String>?)
 }

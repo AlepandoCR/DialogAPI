@@ -23,7 +23,7 @@ internal object ReaderManager {
      */
     fun peekInputs(player: Player, packet: ServerboundCustomClickActionPacket) {
         val binding = CustomKeyRegistry.getBinding(packet.id)
-        binding?.reader?.task(player, PayloadParser.getValue(packet))
+        binding?.reader?.task(player, PayloadParser.getValues(packet))
     }
 
     /**
