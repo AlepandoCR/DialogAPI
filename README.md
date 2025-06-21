@@ -55,6 +55,7 @@ val dialogData = DialogDataBuilder()
     .externalTitle(Component.text("Menu Test"))
     .canCloseWithEscape(true)
     .addBody(PlainMessageDialogBody(100, Component.text("Hello from Dialog!")))
+    .plugin(plugin)
     .build() 
    ```
    
