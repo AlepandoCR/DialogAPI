@@ -149,7 +149,7 @@ object KillPlayerAction: CustomAction() {
 ```kotlin
 object PlayerReturnValueReader: InputReader {
     // InputValueList offers a getter based on keys
-    // Useful for getting specific values with the key set on InputCreation (see below)
+    // Useful for getting specific values with the key set on Input creation (see below)
     override fun task(player: Player, values: InputValueList) { 
         for (input in values.list) {
             player.sendMessage("${input.key}: ${input.key}")
