@@ -23,7 +23,7 @@ typealias NMSDialogListDialog = DialogListDialog
  */
 class ListDialog(
     data: DialogData,
-    private val dialogs: List<net.minecraft.server.dialog.Dialog>,
+    private val dialogs: List<Dialog>,
     private val exitButton: Optional<Button>,
     private val columns: Int = 2,
     private val buttonWidth: Int = 150
@@ -48,7 +48,7 @@ class ListDialog(
      * @return A [HolderSet] containing the NMS dialogs.
      */
     private fun toNMSDialogHolderSet(): HolderSet<net.minecraft.server.dialog.Dialog> {
-        val holders = dialogs.map { Holder.direct(it) }
+        val holders = dialogs.map { Holder.direct(it.toNMS()) }
         return HolderSet.direct(holders)
     }
 

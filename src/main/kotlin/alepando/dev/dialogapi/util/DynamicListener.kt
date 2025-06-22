@@ -3,6 +3,7 @@ package alepando.dev.dialogapi.util
 import org.bukkit.event.HandlerList
 import org.bukkit.event.Listener
 import org.bukkit.plugin.Plugin
+import org.bukkit.scheduler.BukkitRunnable
 
 /**
  * Manages a Bukkit [Listener] dynamically, allowing it to be registered and unregistered on demand.
@@ -105,5 +106,13 @@ class DynamicListener(
      */
     fun isActive(): Boolean{
         return activeListener
+    }
+
+    fun stopListenerAfter(time: Long){
+        object : BukkitRunnable(){
+            override fun run() {
+                stop()
+            }
+        }.runTaskLater(plugin, time)
     }
 }

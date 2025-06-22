@@ -3,12 +3,13 @@ package alepando.dev.dialogapi.executor
 import alepando.dev.dialogapi.factory.actions.CustomAction
 import alepando.dev.dialogapi.packets.reader.InputReader
 import alepando.dev.dialogapi.factory.data.ResourceLocation
+import java.util.*
 
 typealias NMSResourceLocation = net.minecraft.resources.ResourceLocation
 /**
  * Internal data class to hold a registered custom action and its corresponding input reader.
  */
-internal data class KeyBinding(val action: CustomAction, val reader: InputReader)
+internal data class KeyBinding(val action: CustomAction, val reader: Optional<InputReader>)
 
 
 
@@ -29,7 +30,7 @@ object CustomKeyRegistry {
      * @throws IllegalArgumentException if the namespace or path contains invalid characters for ResourceLocation.
      * @throws IllegalStateException if the key (namespace and path combination) is already registered.
      */
-    fun register(resourceLocation: ResourceLocation, action: CustomAction, reader: InputReader) {
+    fun register(resourceLocation: ResourceLocation, action: CustomAction, reader: Optional<InputReader> = Optional.empty()) {
         val location = try {
             resourceLocation.toNMS()
         } catch (e: Exception) {

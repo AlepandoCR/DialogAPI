@@ -7,61 +7,71 @@ import org.bukkit.plugin.Plugin
 import org.bukkit.scheduler.BukkitRunnable
 
 /**
- * Abstract class representing a custom action that can be executed.
- * Custom actions can include tasks and optional event listeners.
+ * Represents an abstract custom dialog action that can be executed in the context of a player.
+ *
+ * Custom actions may include executing tasks (such as damaging a player, triggering events, etc.)
+ * and optionally registering event listeners during the action’s lifecycle.
+ *
+ * Extend this class to define new dialog-based actions for the DialogAPI.
  */
 abstract class CustomAction {
 
     /**
-     * Optional [DynamicListener] that can be used to register and unregister
-     * Bukkit event listeners associated with this action.
+     * Optional dynamic event listener used to register and unregister
+     * Bukkit event listeners associated with this action at runtime.
      */
     var dynamicListener: DynamicListener? = null
 
     /**
-     * Registers the listener provided by the [listener] method with the [dynamicListener].
+     * Registers the listener returned by [listener] using the internal [dynamicListener].
+     *
+     * @param player The [Player] this listener should track or respond to.
      */
-    private fun registerListener(){
-        val listener = listener()
-        listener?: return
+    private fun registerListener(player: Player) {
+        val listener = listener(player)
+        listener ?: return
         dynamicListener?.setListener(listener)
     }
 
     /**
-     * The main task to be executed by this action.
-     * This method must be implemented by subclasses.
+     * Defines the core task to be executed as part of this custom action.
+     * This must be implemented by subclasses to define the specific behavior.
      *
-     * @param player The player for whom the action is being executed.
-     * @param plugin The plugin instance.
+     * @param player The [Player] for whom the action is being executed.
+     * @param plugin The plugin instance used for scheduling or context.
      */
-    protected abstract fun task(player: Player,plugin: Plugin)
+    protected abstract fun task(player: Player, plugin: Plugin)
 
     /**
-     * Executes the custom action.
-     * This involves initializing the [dynamicListener], registering any associated listener,
-     * and running the [task] asynchronously.
+     * Optionally provides a Bukkit [Listener] that will be dynamically registered
+     * for the duration of the action.
      *
-     * @param player The player for whom the action is being executed.
-     * @param plugin The plugin instance.
-     */
-    fun execute(player: Player,plugin: Plugin){
-        dynamicListener = DynamicListener(plugin)
-        registerListener()
-        object : BukkitRunnable(){
-            override fun run() {
-                task(player,plugin)
-            }
-        }.runTask(plugin)
-    }
-
-    /**
-     * Provides an optional [Listener] to be registered while this action is active.
-     * Subclasses can override this method to provide a specific listener.
+     * Override this method in subclasses to add custom event handling logic.
      *
-     * @return A [Listener] instance or null if no listener is needed.
+     * @param dialogPlayer The [Player] instance to bind the listener to.
+     * @return A [Listener] or `null` if no listener is needed.
      */
-    open fun listener(): Listener?{
+    open fun listener(dialogPlayer: Player): Listener? {
         return null
     }
 
+    /**
+     * Executes the action:
+     * - Initializes the [dynamicListener]
+     * - Registers any listener provided by [listener]
+     * - Schedules the [task] to run synchronously on the main server thread
+     *
+     * @param player The [Player] to execute the action for.
+     * @param plugin The plugin instance.
+     */
+    internal fun execute(player: Player, plugin: Plugin) {
+        dynamicListener = DynamicListener(plugin)
+        registerListener(player)
+
+        object : BukkitRunnable() {
+            override fun run() {
+                task(player, plugin)
+            }
+        }.runTask(plugin)
+    }
 }
