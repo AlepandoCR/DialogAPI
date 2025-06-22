@@ -73,9 +73,9 @@ val resourceLocation = ResourceLocation(namespace, path) // Custom API's resourc
     Optional.of(KeyedAction(resourceLocation))
 ) 
 ```
-### MultiAction Dialog
+### Dialog
  ```kotlin
-val dialog = MultiActionDialogBuilder()
+val dialog = MultiActionDialogBuilder() // There are multiple types choose wisely 
     .data(dialogData)
     .columns(1)
     .exitButton(exitButton)
