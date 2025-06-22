@@ -3,7 +3,7 @@ package alepando.dev.dialogapi.factory.data
 import alepando.dev.dialogapi.body.DialogBody
 import alepando.dev.dialogapi.factory.actions.DialogAction
 import alepando.dev.dialogapi.factory.input.Input
-import alepando.dev.dialogapi.util.ComponentTranslator
+import alepando.dev.dialogapi.util.Translator
 import net.kyori.adventure.text.Component
 import java.util.*
 
@@ -121,8 +121,8 @@ class DialogDataBuilder {
 
 
         return DialogData(
-            ComponentTranslator.toNMS(title),
-            Optional.of(ComponentTranslator.toNMS(externalTitle)),
+            Translator.componentToNMS(title),
+            Optional.of(Translator.componentToNMS(externalTitle)),
             canCloseWithEscape,
             pause,
             afterAction,

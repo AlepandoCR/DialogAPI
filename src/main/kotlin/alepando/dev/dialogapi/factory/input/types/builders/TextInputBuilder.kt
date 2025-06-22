@@ -2,7 +2,7 @@ package alepando.dev.dialogapi.factory.input.types.builders
 
 import alepando.dev.dialogapi.factory.input.options.MultilineOptions
 import alepando.dev.dialogapi.factory.input.types.TextInput
-import alepando.dev.dialogapi.util.ComponentTranslator
+import alepando.dev.dialogapi.util.Translator
 
 /**
  * Builder class for creating [TextInput] instances.
@@ -43,6 +43,6 @@ class TextInputBuilder {
      */
     fun build(): TextInput {
         multiline ?: throw IllegalStateException("Multiline options must be defined for TextInput.")
-        return TextInput(ComponentTranslator.toNMS(label), with, labelVisible,key, initial, maxLength, multiline!!)
+        return TextInput(Translator.componentToNMS(label), with, labelVisible,key, initial, maxLength, multiline!!)
     }
 }

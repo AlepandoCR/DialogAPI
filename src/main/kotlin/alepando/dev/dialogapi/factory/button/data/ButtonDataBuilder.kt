@@ -1,6 +1,6 @@
 package alepando.dev.dialogapi.factory.button.data
 
-import alepando.dev.dialogapi.util.ComponentTranslator
+import alepando.dev.dialogapi.util.Translator
 import net.kyori.adventure.text.Component
 import java.util.*
 
@@ -47,6 +47,6 @@ class ButtonDataBuilder {
      * @return The created [ButtonData].
      */
     fun build(): ButtonData {
-        return ButtonData(ComponentTranslator.toNMS(label), width, Optional.of(ComponentTranslator.toNMS(tooltip)))
+        return ButtonData(Translator.componentToNMS(label), width, Optional.of(Translator.componentToNMS(tooltip)))
     }
 }

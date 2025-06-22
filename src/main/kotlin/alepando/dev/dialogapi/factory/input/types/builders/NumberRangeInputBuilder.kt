@@ -2,7 +2,7 @@ package alepando.dev.dialogapi.factory.input.types.builders
 
 import alepando.dev.dialogapi.factory.input.options.RangeInfo
 import alepando.dev.dialogapi.factory.input.types.NumberRangeInput
-import alepando.dev.dialogapi.util.ComponentTranslator
+import alepando.dev.dialogapi.util.Translator
 
 /**
  * Builder class for creating [NumberRangeInput] instances.
@@ -37,6 +37,6 @@ class NumberRangeInputBuilder {
 
         rangeInfo ?: throw IllegalStateException("RangeInfo must be set for NumberRangeInput.")
 
-        return NumberRangeInput(ComponentTranslator.toNMS(label), with,key, labelFormat, rangeInfo!!)
+        return NumberRangeInput(Translator.componentToNMS(label), with,key, labelFormat, rangeInfo!!)
     }
 }

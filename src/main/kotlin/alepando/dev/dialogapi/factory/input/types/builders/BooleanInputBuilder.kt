@@ -1,7 +1,7 @@
 package alepando.dev.dialogapi.factory.input.types.builders
 
 import alepando.dev.dialogapi.factory.input.types.BooleanInput
-import alepando.dev.dialogapi.util.ComponentTranslator
+import alepando.dev.dialogapi.util.Translator
 
 typealias AdventureComponent = net.kyori.adventure.text.Component
 
@@ -34,6 +34,6 @@ class BooleanInputBuilder {
      * @return The created [BooleanInput].
      */
     fun build(): BooleanInput {
-        return BooleanInput(ComponentTranslator.toNMS(label),key, initial, onTrue, onFalse)
+        return BooleanInput(Translator.componentToNMS(label),key, initial, onTrue, onFalse)
     }
 }

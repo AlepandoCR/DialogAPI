@@ -1,5 +1,7 @@
 package alepando.dev.dialogapi.packets.parser
 
+import alepando.dev.dialogapi.util.InputValue
+import alepando.dev.dialogapi.util.InputValueList
 import net.minecraft.nbt.*
 import net.minecraft.network.protocol.common.ServerboundCustomClickActionPacket
 import org.bukkit.Bukkit
@@ -18,19 +20,19 @@ internal object PayloadParser {
      * @return The extracted value, or null if the payload is empty, not a [CompoundTag],
      *         or does not contain a recognizable NBT tag.
      */
-    fun getValues(packet: ServerboundCustomClickActionPacket): Map<String,*>? {
+    fun getValues(packet: ServerboundCustomClickActionPacket): InputValueList {
         val payloadHolder = packet.payload
-        val list = mutableMapOf<String, Any>()
-        if (payloadHolder.isEmpty) return null
+        val list = InputValueList()
+        if (payloadHolder.isEmpty) return list
 
-        val compound = payloadHolder.get() as? CompoundTag ?: return null
+        val compound = payloadHolder.get() as? CompoundTag ?: return list
 
         for(key in compound.keySet()){
             val tag = compound.get(key) ?: continue
             val type = getTypedValue(tag) ?: continue
             val data = type.get() ?: continue
 
-            list[key] = data
+            list.add(InputValue(data,key))
         }
 
         return list

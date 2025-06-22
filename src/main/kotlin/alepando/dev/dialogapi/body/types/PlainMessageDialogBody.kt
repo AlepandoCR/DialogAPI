@@ -1,7 +1,7 @@
 package alepando.dev.dialogapi.body.types
 
 import alepando.dev.dialogapi.body.DialogBody
-import alepando.dev.dialogapi.util.ComponentTranslator
+import alepando.dev.dialogapi.util.Translator
 import net.kyori.adventure.text.Component
 import net.minecraft.server.dialog.body.PlainMessage
 
@@ -16,6 +16,6 @@ class PlainMessageDialogBody(width: Int, private val contents: Component) : Dial
      * @return The NMS equivalent of this dialog body.
      */
     override fun toNMS(): PlainMessage {
-        return PlainMessage(ComponentTranslator.toNMS(contents),width)
+        return PlainMessage(Translator.componentToNMS(contents),width)
     }
 }

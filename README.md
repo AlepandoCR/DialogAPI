@@ -148,14 +148,13 @@ object KillPlayerAction: CustomAction() {
 
 ```kotlin
 object PlayerReturnValueReader: InputReader {
-  override fun task(player: Player, values: Map<String,*>?) {
-    values ?: return
-    for (key in values.keys) { // Keys are set when building the input as shown below this block
-      val value = values[key] // Have to get the value from the key
-      player.sendMessage("$key: $value") // Value comes already parsed according to the input's type
+    // InputValueList offers a getter based on keys
+    // Useful for getting specific values with the key set on InputCreation (see below)
+    override fun task(player: Player, values: InputValueList) { 
+        for (input in values.list) {
+            player.sendMessage("${input.key}: ${input.key}")
+        }
     }
-
-  }
 }
 ```
 ###  Creating Input Fields

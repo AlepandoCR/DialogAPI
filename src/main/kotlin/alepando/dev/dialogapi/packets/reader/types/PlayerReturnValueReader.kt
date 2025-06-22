@@ -1,7 +1,7 @@
 package alepando.dev.dialogapi.packets.reader.types
 
 import alepando.dev.dialogapi.packets.reader.InputReader
-import net.minecraft.network.protocol.common.ServerboundCustomClickActionPacket
+import alepando.dev.dialogapi.util.InputValueList
 import org.bukkit.entity.Player
 
 /**
@@ -20,12 +20,9 @@ object PlayerReturnValueReader: InputReader {
      * @param player The Bukkit [Player] who interacted with the dialog.
      * @param values The value extracted from the packet's payload.
      */
-    override fun task(player: Player, values: Map<String,*>?) {
-        values ?: return
-        for (key in values.keys) {
-            val value = values[key]
-            player.sendMessage("$key: $value")
+    override fun task(player: Player, values: InputValueList) {
+        for (input in values.list) {
+            player.sendMessage("${input.key}: ${input.key}")
         }
-
     }
 }

@@ -2,7 +2,7 @@ package alepando.dev.dialogapi.factory.input.types.builders
 
 import alepando.dev.dialogapi.factory.input.options.Entry
 import alepando.dev.dialogapi.factory.input.types.SingleOptionInput
-import alepando.dev.dialogapi.util.ComponentTranslator
+import alepando.dev.dialogapi.util.Translator
 
 /**
  * Builder class for creating [SingleOptionInput] instances.
@@ -36,6 +36,6 @@ class SingleOptionInputBuilder {
      * @return The created [SingleOptionInput].
      */
     fun build(): SingleOptionInput {
-        return SingleOptionInput(ComponentTranslator.toNMS(label), with,key, entries, labelVisible)
+        return SingleOptionInput(Translator.componentToNMS(label), with,key, entries, labelVisible)
     }
 }

@@ -1,7 +1,7 @@
 package alepando.dev.dialogapi.factory.input.options.builders
 
 import alepando.dev.dialogapi.factory.input.options.Entry
-import alepando.dev.dialogapi.util.ComponentTranslator
+import alepando.dev.dialogapi.util.Translator
 import net.kyori.adventure.text.Component
 import java.util.*
 
@@ -27,6 +27,6 @@ class EntryBuilder {
      * @return The created [Entry].
      */
     fun build(): Entry {
-        return Entry(id, initial, Optional.of(ComponentTranslator.toNMS(display.get())))
+        return Entry(id, initial, Optional.of(Translator.componentToNMS(display.get())))
     }
 }

@@ -1,6 +1,8 @@
 package alepando.dev.dialogapi.packets.reader
 
 import alepando.dev.dialogapi.packets.parser.PayloadParser
+import alepando.dev.dialogapi.util.InputValue
+import alepando.dev.dialogapi.util.InputValueList
 import net.minecraft.network.protocol.common.ServerboundCustomClickActionPacket
 import org.bukkit.entity.Player
 
@@ -22,5 +24,5 @@ interface InputReader {
      *              This is provided as a convenience, but implementations can choose to parse the packet directly.
      *              The type of this value depends on the data sent by the client (e.g., String, Int, Boolean).
      */
-    fun task(player: Player, values: Map<String,*>?)
+    fun task(player: Player, values: InputValueList)
 }
