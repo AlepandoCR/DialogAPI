@@ -1,5 +1,6 @@
 package alepando.dev.dialogapi.types.builders
 
+import alepando.dev.dialogapi.factory.Dialog
 import alepando.dev.dialogapi.factory.button.Button
 import alepando.dev.dialogapi.factory.data.DialogData
 import alepando.dev.dialogapi.types.ListDialog
@@ -10,7 +11,7 @@ import java.util.*
  */
 class ListDialogBuilder {
     private lateinit var data: DialogData
-    private var dialogs: MutableList<net.minecraft.server.dialog.Dialog> = mutableListOf()
+    private var dialogs: MutableList<Dialog> = mutableListOf()
     private var exitButton: Optional<Button> = Optional.empty()
     private var columns: Int = 2
     private var buttonWidth: Int = 150
@@ -19,10 +20,10 @@ class ListDialogBuilder {
     fun data(data: DialogData) = apply { this.data = data }
 
     /** Sets the list of NMS dialogs to be displayed. */
-    fun dialogs(dialogs: List<net.minecraft.server.dialog.Dialog>) = apply { this.dialogs = dialogs.toMutableList() }
+    fun dialogs(dialogs: List<Dialog>) = apply { this.dialogs = dialogs.toMutableList() }
 
     /** Adds an NMS dialog to the list of dialogs to be displayed. */
-    fun addDialog(dialog: net.minecraft.server.dialog.Dialog) = apply { this.dialogs.add(dialog) }
+    fun addDialog(dialog: Dialog) = apply { this.dialogs.add(dialog) }
 
     /** Sets the optional exit button for the list dialog. */
     fun exitButton(exitButton: Button?) = apply { this.exitButton = Optional.ofNullable(exitButton) }
