@@ -3,6 +3,7 @@ package alepando.dev.dialogapi.types.builders
 import alepando.dev.dialogapi.factory.button.Button
 import alepando.dev.dialogapi.factory.data.DialogData
 import alepando.dev.dialogapi.types.MultiActionDialog
+import java.lang.IllegalStateException
 import java.util.*
 
 /**
@@ -35,6 +36,7 @@ class MultiActionDialogBuilder {
      * @throws UninitializedPropertyAccessException if [data] is not set.
      */
     fun build(): MultiActionDialog {
+        if(buttons.isEmpty()) throw IllegalStateException("MultiActionDialogs should have at least 1 Button")
         return MultiActionDialog(data, buttons, exitButton, columns)
     }
 }
