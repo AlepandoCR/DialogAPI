@@ -17,7 +17,7 @@
 - [ How to Use](#-how-to-use)
     - [ Adding the API](#-adding-the-api)
     - [ API Initialization](#-api-initialization)
-- [🛠 Building a Simple Dialog](#-building-a-simple-dialog)
+- [ Building a Simple Dialog](#-building-a-simple-dialog)
     - [ DialogData](#-dialog-data)
     - [ Adding Buttons with Actions](#-adding-buttons-with-actions)
     - [ Creating the Dialog](#-creating-the-dialog)
