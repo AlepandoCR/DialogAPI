@@ -58,7 +58,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.github.AlepandoCR:DialogAPI:v1.1.1") 
+    implementation("com.github.AlepandoCR:DialogAPI:v1.2.0") 
 }
 ```
 > 💡 **Tip:** Always check [JitPack](https://jitpack.io/#AlepandoCR/DialogAPI) or the [GitHub Releases page](https://github.com/AlepandoCR/DialogAPI/releases) for the latest version number.
