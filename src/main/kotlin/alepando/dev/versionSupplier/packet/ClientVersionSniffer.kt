@@ -64,7 +64,7 @@ internal object ClientVersionSniffer : Listener {
             } else {
                 DialogAPI.plugin?.logger?.warning("Could not read protocol for ${player.name}")
             }
-        }, 1L) // Delay 1 tick para asegurar que el handshake haya ocurrido
+        }, 1L)
     }
 
 
