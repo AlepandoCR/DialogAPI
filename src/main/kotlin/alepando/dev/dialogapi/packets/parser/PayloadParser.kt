@@ -65,4 +65,55 @@ internal object PayloadParser {
         }
     }
 
+    fun toCompoundTag(values: InputValueList): CompoundTag {
+        val compound = CompoundTag()
+        for (value in values.list) {
+            val tag = when (val data = value.value) {
+                is Byte -> ByteTag.valueOf(data)
+                is Short -> ShortTag.valueOf(data)
+                is Int -> IntTag.valueOf(data)
+                is Long -> LongTag.valueOf(data)
+                is Float -> FloatTag.valueOf(data)
+                is Double -> DoubleTag.valueOf(data)
+                is String -> StringTag.valueOf(data)
+                is ByteArray -> ByteArrayTag(data)
+                is IntArray -> IntArrayTag(data)
+                is LongArray -> LongArrayTag(data)
+                is List<*> -> {
+                    val tagList = ListTag()
+                    data.forEach { item ->
+                        when (item) {
+                            is String -> tagList.add(StringTag.valueOf(item))
+                            is Int -> tagList.add(IntTag.valueOf(item))
+                            is Byte -> tagList.add(ByteTag.valueOf(item))
+                            is Short -> tagList.add(ShortTag.valueOf(item))
+                            is Long -> tagList.add(LongTag.valueOf(item))
+                            is Float -> tagList.add(FloatTag.valueOf(item))
+                            is Double -> tagList.add(DoubleTag.valueOf(item))
+                        }
+                    }
+                    tagList
+                }
+
+                is Map<*, *> -> {
+                    val subCompound = CompoundTag()
+                    data.forEach { (k, v) ->
+                        if (k is String && v is String) {
+                            subCompound.put(k, StringTag.valueOf(v))
+                        }
+                    }
+                    subCompound
+                }
+
+                else -> {
+                    Bukkit.getLogger().warning("Unsupported input value type: ${data.javaClass.simpleName}")
+                    null
+                }
+            }
+
+            if (tag != null) compound.put(value.key, tag)
+        }
+        return compound
+    }
+
 }

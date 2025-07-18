@@ -1,5 +1,8 @@
 package alepando.dev.dialogapi.factory.button.data
 
+import alepando.dev.dialogapi.util.Translator.toPersistentDataContainer
+import net.minecraft.nbt.CompoundTag
+import org.bukkit.Bukkit
 import org.bukkit.NamespacedKey
 import org.bukkit.craftbukkit.persistence.CraftPersistentDataContainer
 import org.bukkit.craftbukkit.persistence.CraftPersistentDataTypeRegistry
@@ -20,7 +23,7 @@ class DataContainer {
     /**
      * The underlying [PersistentDataContainer] where all key-value pairs are stored.
      */
-    internal val container: PersistentDataContainer = create()
+    internal var container: PersistentDataContainer = create()
 
     /**
      * Adds a new key-value pair to the container.
@@ -40,5 +43,13 @@ class DataContainer {
      */
     private fun create(): PersistentDataContainer {
         return CraftPersistentDataContainer(CraftPersistentDataTypeRegistry())
+    }
+
+    companion object {
+        fun fromNMS(tag: CompoundTag): DataContainer {
+            val dataContainer = DataContainer()
+            dataContainer.container = tag.toPersistentDataContainer(Bukkit.getPluginManager().plugins[0])
+            return dataContainer
+        }
     }
 }

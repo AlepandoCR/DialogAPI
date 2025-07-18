@@ -31,13 +31,13 @@ typealias NMSInput = net.minecraft.server.dialog.Input
  * @property inputs A list of [Input] elements allowing user interaction.
  */
 class DialogData internal constructor(
-    private val title: Component,
+    val title: Component,
     private val externalTitle: Optional<Component>,
     private val canCloseWithEscape: Boolean,
     private val pause: Boolean,
     private val afterAction: DialogAction,
-    private val dialogBody: List<DialogBody<*>>,
-    private val inputs: List<Input<*>>,
+    val dialogBody: List<DialogBody<*>>,
+    val inputs: List<Input<*>>,
 ): Wrapper<CommonDialogData> {
 
     /**

@@ -16,7 +16,7 @@ typealias NMSNoticeDialog = NoticeDialog
  */
 class NoticeDialog(
     data: DialogData,
-    private val button: Button
+    val button: Button
 ) : Dialog(data) {
 
     /**

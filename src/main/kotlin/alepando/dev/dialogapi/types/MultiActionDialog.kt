@@ -20,9 +20,9 @@ typealias NMSMultiActionDialog = MultiActionDialog
  */
 class MultiActionDialog(
     data: DialogData,
-    private val buttons: List<Button>,
-    private val exitButton: Optional<Button>,
-    private val columns: Int
+    val buttons: List<Button>,
+    val exitButton: Optional<Button>,
+    val columns: Int
 
 ): Dialog(data) {
     /**

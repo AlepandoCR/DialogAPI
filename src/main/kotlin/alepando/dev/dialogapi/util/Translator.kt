@@ -1,6 +1,5 @@
 package alepando.dev.dialogapi.util
 
-import alepando.dev.dialogapi.util.Translator.toPersistentDataContainer
 import io.papermc.paper.adventure.PaperAdventure
 import net.kyori.adventure.text.Component
 import net.minecraft.nbt.*
@@ -10,7 +9,6 @@ import org.bukkit.craftbukkit.persistence.CraftPersistentDataTypeRegistry
 import org.bukkit.persistence.PersistentDataContainer
 import org.bukkit.persistence.PersistentDataType
 import org.bukkit.plugin.Plugin
-import org.bukkit.plugin.java.JavaPlugin
 import net.minecraft.network.chat.Component as NMSComponent
 
 /**
@@ -26,6 +24,20 @@ internal object Translator {
      */
     fun componentToNMS(component: Component): NMSComponent {
         return PaperAdventure.asVanilla(component)
+    }
+
+    /**
+     * Converts an NMS [NMSComponent] to its Adventure equivalent using Paper's Adventure library.
+     *
+     * @param component The NMS [NMSComponent] to convert.
+     * @return The corresponding Adventure [Component].
+     */
+    fun nmsToComponent(component: NMSComponent): Component {
+        return PaperAdventure.asAdventure(component)
+    }
+
+    fun NMSComponent.toComponent(): Component {
+        return PaperAdventure.asAdventure(this)
     }
 
 

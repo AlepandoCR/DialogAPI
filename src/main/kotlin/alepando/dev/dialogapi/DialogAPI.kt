@@ -14,6 +14,8 @@ object DialogAPI {
 
     private var initialized = false
 
+    var plugin: Plugin? = null
+
     /**
      * Initializes the Dialog API by registering necessary listeners and hooks.
      *
@@ -22,6 +24,8 @@ object DialogAPI {
     fun initialize(plugin: Plugin) {
         if (initialized) return
         initialized = true
+
+        this.plugin = plugin
 
         val pm: PluginManager = Bukkit.getPluginManager()
         ClientVersionSniffer.injectAll(plugin)
