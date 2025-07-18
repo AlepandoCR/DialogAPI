@@ -19,7 +19,7 @@ object PlayerOpener{
      */
     fun Player.openDialog(dialog: Dialog) {
         val protocolVersion = ClientVersionSniffer.getProtocolVersionForUUID(uniqueId) ?: 0
-        if (protocolVersion < 766) {
+        if (protocolVersion < 765) {
             DialogInventory().parse(this, dialog)
             return
         }
