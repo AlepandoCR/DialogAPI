@@ -5,6 +5,7 @@ import io.netty.buffer.ByteBuf
 import io.netty.channel.ChannelDuplexHandler
 import io.netty.channel.ChannelHandlerContext
 import net.minecraft.network.Connection
+import net.minecraft.server.MinecraftServer
 import org.bukkit.Bukkit
 import org.bukkit.craftbukkit.entity.CraftPlayer
 import org.bukkit.entity.Player
@@ -20,7 +21,7 @@ internal object ClientVersionSniffer : Listener {
     private val channelProtocols = ConcurrentHashMap<ChannelHandlerContext, Int>()
     private val clientProtocols = ConcurrentHashMap<UUID, Int>()
 
-    fun injectPlayer(player: Player, plugin: Plugin) {
+    private fun injectPlayer(player: Player, plugin: Plugin) {
         val channel = (player as CraftPlayer).handle.connection.connection.channel
         val handlerName = "${plugin.name.lowercase()}_version_sniffer"
 
@@ -49,7 +50,6 @@ internal object ClientVersionSniffer : Listener {
             })
         }
     }
-
 
     @EventHandler
     fun onJoin(event: PlayerJoinEvent) {

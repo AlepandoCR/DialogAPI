@@ -28,6 +28,7 @@ object DialogAPI {
         this.plugin = plugin
 
         val pm: PluginManager = Bukkit.getPluginManager()
+        pm.registerEvents(ClientVersionSniffer,plugin)
         pm.registerEvents(PlayerConnectionStatus(plugin), plugin)
         pm.registerEvents(ServerStatusListener(plugin),plugin)
     }
