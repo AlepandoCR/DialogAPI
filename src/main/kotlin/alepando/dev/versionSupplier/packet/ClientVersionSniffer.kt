@@ -1,5 +1,6 @@
 package alepando.dev.versionSupplier.packet
 
+import alepando.dev.dialogapi.DialogAPI
 import io.netty.buffer.ByteBuf
 import io.netty.channel.ChannelDuplexHandler
 import io.netty.channel.ChannelHandlerContext
@@ -41,6 +42,7 @@ internal object ClientVersionSniffer : Listener {
                                     readVarInt(msg) // intention
 
                                     channelProtocols[ctx] = protocolVersion
+
                                 }
                             } catch (_: Exception) {
                             } finally {
@@ -66,6 +68,8 @@ internal object ClientVersionSniffer : Listener {
         if (protocol != null) {
             clientProtocols[player.uniqueId] = protocol
         }
+
+        DialogAPI.plugin?.logger?.info("Player: ${player.name} with version $protocol")
     }
 
     fun getProtocolVersionForUUID(uuid: UUID): Int? {
