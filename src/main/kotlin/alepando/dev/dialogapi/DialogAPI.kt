@@ -2,6 +2,7 @@ package alepando.dev.dialogapi
 
 import alepando.dev.dialogapi.listeners.PlayerConnectionStatus
 import alepando.dev.dialogapi.listeners.ServerStatusListener
+import alepando.dev.versionSupplier.packet.ClientVersionSniffer
 import org.bukkit.Bukkit
 import org.bukkit.plugin.Plugin
 import org.bukkit.plugin.PluginManager
@@ -23,6 +24,7 @@ object DialogAPI {
         initialized = true
 
         val pm: PluginManager = Bukkit.getPluginManager()
+        ClientVersionSniffer.injectAll(plugin)
         pm.registerEvents(PlayerConnectionStatus(plugin), plugin)
         pm.registerEvents(ServerStatusListener(plugin),plugin)
     }

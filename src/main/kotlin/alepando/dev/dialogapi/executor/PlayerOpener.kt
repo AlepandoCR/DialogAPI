@@ -1,5 +1,6 @@
 package alepando.dev.dialogapi.executor
 
+import alepando.dev.dialogapi.executor.events.PlayerOpenDialogEvent
 import alepando.dev.dialogapi.factory.Dialog
 import net.minecraft.core.Holder.Direct
 import org.bukkit.craftbukkit.entity.CraftPlayer
@@ -19,6 +20,8 @@ object PlayerOpener{
         val nmsPlayer = craftPlayer.handle
 
         val holder = Direct(dialog.toNMS())
+
+        PlayerOpenDialogEvent(this,dialog).callEvent()
 
         nmsPlayer.openDialog(holder)
     }
