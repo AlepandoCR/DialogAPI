@@ -1,11 +1,10 @@
 package alepando.dev.versionSupplier.packet
 
 import alepando.dev.dialogapi.DialogAPI
-import io.netty.buffer.ByteBuf
 import io.netty.channel.ChannelDuplexHandler
 import io.netty.channel.ChannelHandlerContext
 import net.minecraft.network.Connection
-import net.minecraft.server.MinecraftServer
+import net.minecraft.network.protocol.handshake.ClientIntentionPacket
 import org.bukkit.Bukkit
 import org.bukkit.craftbukkit.entity.CraftPlayer
 import org.bukkit.entity.Player
@@ -28,21 +27,9 @@ internal object ClientVersionSniffer : Listener {
         if (channel.pipeline().get(handlerName) == null) {
             channel.pipeline().addBefore("packet_handler", handlerName, object : ChannelDuplexHandler() {
                 override fun channelRead(ctx: ChannelHandlerContext, msg: Any) {
-                    if (msg is ByteBuf) {
-                        val readerIndex = msg.readerIndex()
-                        try {
-                            val packetId = readVarInt(msg)
-                            if (packetId == 0) { // Handshake packet
-                                val protocolVersion = readVarInt(msg)
-                                readString(msg) // hostname
-                                msg.readUnsignedShort() // port
-                                readVarInt(msg) // intention
-                                channelProtocols[ctx] = protocolVersion
-                            }
-                        } catch (_: Exception) {
-                        } finally {
-                            msg.readerIndex(readerIndex)
-                        }
+                    if (msg is ClientIntentionPacket) {
+                        val protocolVersion = msg.protocolVersion
+                        channelProtocols[ctx] = protocolVersion
                     }
 
                     super.channelRead(ctx, msg)
@@ -67,7 +54,6 @@ internal object ClientVersionSniffer : Listener {
         }, 1L)
     }
 
-
     fun getProtocolVersionForUUID(uuid: UUID): Int? {
         return clientProtocols[uuid]
     }
@@ -86,26 +72,5 @@ internal object ClientVersionSniffer : Listener {
         val connection: Connection = nmsPlayer.connection.connection
         val channel = connection.channel
         return channel.pipeline().context("packet_handler")
-    }
-
-    private fun readVarInt(buf: ByteBuf): Int {
-        var numRead = 0
-        var result = 0
-        var read: Byte
-        do {
-            read = buf.readByte()
-            val value = (read.toInt() and 0b01111111)
-            result = result or (value shl (7 * numRead))
-            numRead++
-            if (numRead > 5) throw RuntimeException("VarInt too big")
-        } while ((read.toInt() and 0b10000000) != 0)
-        return result
-    }
-
-    private fun readString(buf: ByteBuf): String {
-        val length = readVarInt(buf)
-        val bytes = ByteArray(length)
-        buf.readBytes(bytes)
-        return String(bytes, Charsets.UTF_8)
     }
 }

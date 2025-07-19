@@ -16,40 +16,45 @@ import java.util.*
 
 class DialogInventory {
 
+    var currentInput: Input<*>? = null
+    private var buttons = mutableListOf<Button>()
     private val plugin = DialogAPI.plugin!!
     private val inventoryButtons = mutableMapOf<UUID, List<Button>>()
     private val inputResponses = mutableMapOf<UUID, MutableMap<String, String>>()
 
     fun parse(player: Player, dialog: Dialog) {
         val inputs = dialog.data.inputs
+        openInventoryForDialog(player, dialog)
         if (inputs.isNotEmpty()) {
             inputResponses[player.uniqueId] = mutableMapOf()
-            handleInputsSequentially(player, dialog, inputs.iterator())
-        } else {
-            openInventoryForDialog(player, dialog)
+            handleInputsSequentially(player, dialog, inputs.iterator(), buttons)
         }
     }
 
-    private fun handleInputsSequentially(player: Player, dialog: Dialog, iterator: Iterator<Input<*>>) {
+    private fun handleInputsSequentially(player: Player, dialog: Dialog, iterator: MutableIterator<Input<*>>, buttons: List<Button>) {
         if (!iterator.hasNext()) {
             openInventoryForDialog(player, dialog)
             return
         }
 
         val input = iterator.next()
-        val resourceLocation = getResourceLocationFromDialog(dialog, input.key)
-        val inventory = AnvilGUI().create(player, input.toString())
+        val action = buttons.firstOrNull()?.action ?: return
+        if(action.isPresent){
+            val resourceLocation = action.get().resourceLocation
+            val inventory = AnvilGUI().create(player, input.label.toString())
 
-        DynamicListener(plugin).apply {
-            setListener(AnvilListener(resourceLocation, this))
-            start()
+            DynamicListener(plugin).apply {
+                setListener(AnvilListener(this, iterator,buttons))
+                start()
+            }
+            player.openInventory(inventory)
         }
 
-        player.openInventory(inventory)
     }
 
     private fun openInventoryForDialog(player: Player, dialog: Dialog) {
         val buttons = getButtonsFromDialog(dialog)
+        this.buttons = buttons
         val inventory = InventoryFactory().createInventory(dialog, buttons)
 
         inventoryButtons[player.uniqueId] = buttons
@@ -61,24 +66,26 @@ class DialogInventory {
         }
     }
 
-    private fun getButtonsFromDialog(dialog: Dialog): List<Button> {
+    private fun getButtonsFromDialog(dialog: Dialog): MutableList<Button> {
         return when (dialog) {
             is MultiActionDialog -> getButtonsFromMultiActionDialog(dialog)
             is ConfirmationDialog -> getButtonsFromConfirmationDialog(dialog)
-            is NoticeDialog -> listOf(dialog.button)
-            else -> emptyList()
+            is ListDialog -> mutableListOf(dialog.exitButton.get())
+            is LinksDialog -> mutableListOf(dialog.exitButton.get())
+            is NoticeDialog -> mutableListOf(dialog.button)
+            else -> mutableListOf()
         }
     }
 
-    private fun getButtonsFromMultiActionDialog(dialog: MultiActionDialog): List<Button> {
+    private fun getButtonsFromMultiActionDialog(dialog: MultiActionDialog): MutableList<Button> {
         return buildList {
             addAll(dialog.buttons)
             dialog.exitButton.ifPresent { add(it) }
-        }
+        }.toMutableList()
     }
 
-    private fun getButtonsFromConfirmationDialog(dialog: ConfirmationDialog): List<Button> {
-        return listOf(
+    private fun getButtonsFromConfirmationDialog(dialog: ConfirmationDialog): MutableList<Button> {
+        return mutableListOf(
             Button.fromNMS(dialog.yesButton),
             Button.fromNMS(dialog.noButton)
         )

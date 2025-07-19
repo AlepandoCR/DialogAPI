@@ -36,8 +36,8 @@ class DialogData internal constructor(
     private val canCloseWithEscape: Boolean,
     private val pause: Boolean,
     private val afterAction: DialogAction,
-    val dialogBody: List<DialogBody<*>>,
-    val inputs: List<Input<*>>,
+    val dialogBody: MutableList<DialogBody<*>>,
+    val inputs: MutableList<Input<*>>,
 ): Wrapper<CommonDialogData> {
 
     /**
