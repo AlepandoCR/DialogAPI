@@ -1,5 +1,6 @@
 package alepando.dev.dialogapi.executor.events
 
+import alepando.dev.dialogapi.DialogAPI
 import alepando.dev.dialogapi.factory.actions.CustomAction
 import alepando.dev.dialogapi.packets.parser.PayloadParser
 import alepando.dev.dialogapi.packets.reader.InputReader
@@ -9,7 +10,7 @@ import org.bukkit.event.HandlerList
 import org.bukkit.event.player.PlayerEvent
 import org.bukkit.plugin.Plugin
 
-class PlayerDialogInteractionEvent(player: Player, packet: ServerboundCustomClickActionPacket, internal val plugin: Plugin): PlayerEvent(player) {
+class PlayerDialogInteractionEvent(player: Player, packet: ServerboundCustomClickActionPacket, internal val plugin: Plugin = DialogAPI.plugin!!): PlayerEvent(player) {
 
     private val payload = PayloadParser.getValues(packet)
     val id = packet.id

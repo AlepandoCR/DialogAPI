@@ -59,6 +59,16 @@ internal object Translator {
         return PaperAdventure.asAdventure(this)
     }
 
+    fun MutableMap<String,*>.toInputValueList():InputValueList{
+        val list = InputValueList()
+        this.forEach{
+            val value = InputValue(it.value!!,it.key)
+            list.add(value)
+        }
+
+        return list
+    }
+
 
     fun PersistentDataContainer.toCompoundTag(): CompoundTag {
         val tag = CompoundTag()
