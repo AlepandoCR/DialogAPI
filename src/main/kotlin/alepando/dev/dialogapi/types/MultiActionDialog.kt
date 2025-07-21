@@ -22,7 +22,7 @@ class MultiActionDialog(
     data: DialogData,
     val buttons: List<Button>,
     val exitButton: Optional<Button>,
-    val columns: Int
+    private val columns: Int
 
 ): Dialog(data) {
     /**

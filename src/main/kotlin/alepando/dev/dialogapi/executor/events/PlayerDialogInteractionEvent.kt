@@ -11,7 +11,7 @@ import org.bukkit.plugin.Plugin
 
 class PlayerDialogInteractionEvent(player: Player, packet: ServerboundCustomClickActionPacket, internal val plugin: Plugin): PlayerEvent(player) {
 
-    val payload = PayloadParser.getValues(packet)
+    private val payload = PayloadParser.getValues(packet)
     val id = packet.id
 
     override fun getHandlers(): HandlerList = handlerList

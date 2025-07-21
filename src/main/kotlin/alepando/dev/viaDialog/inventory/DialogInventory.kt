@@ -11,59 +11,77 @@ import alepando.dev.viaDialog.factory.InventoryFactory
 import alepando.dev.viaDialog.guis.AnvilGUI
 import alepando.dev.viaDialog.listeners.AnvilListener
 import alepando.dev.viaDialog.listeners.InventoryListener
+import net.kyori.adventure.text.Component
 import org.bukkit.entity.Player
 import java.util.*
 
 class DialogInventory {
 
-    var currentInput: Input<*>? = null
     private var buttons = mutableListOf<Button>()
     private val plugin = DialogAPI.plugin!!
     private val inventoryButtons = mutableMapOf<UUID, List<Button>>()
-    private val inputResponses = mutableMapOf<UUID, MutableMap<String, String>>()
+    val inputResponses = mutableMapOf<Component, Button>()
 
     fun parse(player: Player, dialog: Dialog) {
-        val inputs = dialog.data.inputs
         openInventoryForDialog(player, dialog)
-        if (inputs.isNotEmpty()) {
-            inputResponses[player.uniqueId] = mutableMapOf()
-            handleInputsSequentially(player, dialog, inputs.iterator(), buttons)
-        }
     }
 
-    private fun handleInputsSequentially(player: Player, dialog: Dialog, iterator: MutableIterator<Input<*>>, buttons: List<Button>) {
-        if (!iterator.hasNext()) {
-            openInventoryForDialog(player, dialog)
+    fun handleInputsSequentially(player: Player, dialog: Dialog, list: MutableList<Input<*>>, button: Button) {
+        DialogAPI.log("[handleInputsSequentially] invoked")
+        if (list.isEmpty()) {
+            DialogAPI.log("Input list empty")
             return
         }
 
-        val input = iterator.next()
-        val action = buttons.firstOrNull()?.action ?: return
-        if(action.isPresent){
-            val resourceLocation = action.get().resourceLocation
-            val inventory = AnvilGUI().create(player, input.label.toString())
-
-            DynamicListener(plugin).apply {
-                setListener(AnvilListener(this, iterator,buttons))
-                start()
-            }
-            player.openInventory(inventory)
+        DialogAPI.log("[RemainingInputs] ${list.size}")
+        list.forEach {
+            DialogAPI.log("[RemainingInputs] ${it.label.string}")
         }
 
+        val input = list.firstOrNull() ?: return
+        list.remove(input)
+
+        val action = button.action
+        if (action.isPresent) {
+            DialogAPI.log("[handleInputsSequentially] opening input: ${input.key}")
+            openInputMenu(player, input, list, button, dialog)
+        } else {
+            DialogAPI.log("[handleInputsSequentially] no action present")
+        }
+    }
+
+    private fun openInputMenu(
+        player: Player,
+        input: Input<*>,
+        list: MutableList<Input<*>>,
+        button: Button,
+        dialog: Dialog
+    ) {
+        val inventory = AnvilGUI().create(player, input)
+
+        val listener = DynamicListener(plugin).apply {
+            setListener(AnvilListener(player, this, list, button, this@DialogInventory, input, dialog))
+        }
+        listener.start()
+        DialogAPI.log("[Listener] AnvilListener started")
+        player.openInventory(inventory)
     }
 
     private fun openInventoryForDialog(player: Player, dialog: Dialog) {
-        val buttons = getButtonsFromDialog(dialog)
-        this.buttons = buttons
-        val inventory = InventoryFactory().createInventory(dialog, buttons)
-
-        inventoryButtons[player.uniqueId] = buttons
-        player.openInventory(inventory)
-
-        DynamicListener(plugin).apply {
-            setListener(InventoryListener(buttons, this))
-            start()
+        this.buttons = getButtonsFromDialog(dialog)
+        buttons.forEach {
+            DialogAPI.log("[Button] button: ${it.data.label.string}")
         }
+        val factory = InventoryFactory()
+        val inventory = factory.createInventory(dialog, buttons)
+        val itemButtons = factory.buttonItems
+
+        val listener = DynamicListener(plugin).apply {
+            setListener(InventoryListener(buttons, this, dialog, this@DialogInventory,itemButtons))
+        }
+        listener.start()
+        DialogAPI.log("[Listener] InventoryListener started")
+        player.openInventory(inventory)
     }
 
     private fun getButtonsFromDialog(dialog: Dialog): MutableList<Button> {
@@ -78,9 +96,12 @@ class DialogInventory {
     }
 
     private fun getButtonsFromMultiActionDialog(dialog: MultiActionDialog): MutableList<Button> {
+        val exitButton = dialog.exitButton
         return buildList {
             addAll(dialog.buttons)
-            dialog.exitButton.ifPresent { add(it) }
+            if(exitButton.isPresent){
+                add(exitButton.get())
+            }
         }.toMutableList()
     }
 
@@ -101,11 +122,7 @@ class DialogInventory {
         } ?: ResourceLocation(defaultNamespace, inputKey)
     }
 
-    fun getInputResponses(player: Player): Map<String, String> {
-        return inputResponses[player.uniqueId] ?: emptyMap()
-    }
-
-    fun clearInputResponses(player: Player) {
-        inputResponses.remove(player.uniqueId)
+    fun clearInputResponses() {
+        inputResponses.clear()
     }
 }

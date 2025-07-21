@@ -2,6 +2,8 @@ package alepando.dev.dialogapi.util
 
 import io.papermc.paper.adventure.PaperAdventure
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import net.minecraft.nbt.*
 import org.bukkit.NamespacedKey
 import org.bukkit.craftbukkit.persistence.CraftPersistentDataContainer
@@ -10,6 +12,7 @@ import org.bukkit.persistence.PersistentDataContainer
 import org.bukkit.persistence.PersistentDataType
 import org.bukkit.plugin.Plugin
 import net.minecraft.network.chat.Component as NMSComponent
+
 
 /**
  * Utility object for translating Adventure [Component] instances to NMS (Net Minecraft Server) [NMSComponent] instances.
@@ -24,6 +27,18 @@ internal object Translator {
      */
     fun componentToNMS(component: Component): NMSComponent {
         return PaperAdventure.asVanilla(component)
+    }
+
+    fun Component.toNMS(): NMSComponent{
+        return PaperAdventure.asVanilla(this)
+    }
+
+    fun Component.toPlainText(): String{
+        return PlainTextComponentSerializer.plainText().serialize(this)
+    }
+
+    fun Component.toLegacyText(): String{
+        return LegacyComponentSerializer.legacySection().serialize(this);
     }
 
     /**

@@ -33,5 +33,12 @@ object DialogAPI {
         pm.registerEvents(ServerStatusListener(plugin),plugin)
     }
 
+    fun log(vararg string: String){
+        plugin?.let {
+            string.forEach {
+                plugin!!.logger.info(it)
+            }
+        }
+    }
 
 }

@@ -65,9 +65,9 @@ internal object PayloadParser {
         }
     }
 
-    fun toCompoundTag(values: InputValueList): CompoundTag {
+    fun InputValueList.toCompoundTag(): CompoundTag {
         val compound = CompoundTag()
-        for (value in values.list) {
+        for (value in this.list) {
             val tag = when (val data = value.value) {
                 is Byte -> ByteTag.valueOf(data)
                 is Short -> ShortTag.valueOf(data)
