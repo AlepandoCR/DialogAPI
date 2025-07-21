@@ -8,9 +8,7 @@ import alepando.dev.dialogapi.factory.input.types.BookInput
 import alepando.dev.dialogapi.types.*
 import alepando.dev.dialogapi.util.DynamicListener
 import alepando.dev.viaDialog.factory.InventoryFactory
-import alepando.dev.viaDialog.guis.AnvilGUI
 import alepando.dev.viaDialog.guis.BookInputHandler
-import alepando.dev.viaDialog.listeners.AnvilListener
 import alepando.dev.viaDialog.listeners.InventoryListener
 import org.bukkit.entity.Player
 import java.util.*
@@ -57,20 +55,8 @@ class DialogInventory {
         button: Button,
         dialog: Dialog
     ) {
-        when (input) {
-            is BookInput -> {
-                BookInputHandler().giveBook(player, input, list, button, dialog, this, DialogAPI.plugin!!)
-            }
-            else -> {
-                val inventory = AnvilGUI().create(player, input)
-                val listener = DynamicListener(plugin).apply {
-                    setListener(AnvilListener(player, this, list, button, this@DialogInventory, input, dialog))
-                }
-                listener.start()
-                DialogAPI.log("[Listener] AnvilListener started")
-                player.openInventory(inventory)
-            }
-        }
+        val bookInput = BookInput(input.key,input.label.string)
+        BookInputHandler().giveBook(player, bookInput, list, button, dialog, this, DialogAPI.plugin!!)
     }
 
     private fun openInventoryForDialog(player: Player, dialog: Dialog) {
