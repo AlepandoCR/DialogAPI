@@ -27,24 +27,20 @@ internal object PayloadParser {
 
         val compound = payloadHolder.get() as? CompoundTag ?: return list
 
-        for(key in compound.keySet()){
+        for (key in compound.keySet()) {
             val tag = compound.get(key) ?: continue
-            val type = getTypedValue(tag) ?: continue
-            val data = type.get() ?: continue
-
-            list.add(InputValue(data,key))
+            val value = fromTag(tag)
+            if (value != null) {
+                list.add(InputValue(value, key))
+            } else {
+                Bukkit.getLogger().warning("Unknown NBT tag type: ${tag.id} for key $key")
+            }
         }
 
         return list
     }
 
-    /**
-     * Converts an NBT [Tag] to its corresponding Java type, wrapped in an [Optional].
-     *
-     * @param tag The NBT [Tag] to convert.
-     * @return An [Optional] containing the converted value, or null if the tag type is unknown.
-     */
-    private fun getTypedValue(tag: Tag): Optional<*>? {
+    private fun fromTag(tag: Tag): Any? {
         return when (tag.id.toInt()) {
             1 -> (tag as ByteTag).asByte()
             2 -> (tag as ShortTag).asShort()
@@ -52,68 +48,75 @@ internal object PayloadParser {
             4 -> (tag as LongTag).asLong()
             5 -> (tag as FloatTag).asFloat()
             6 -> (tag as DoubleTag).asDouble()
-            7 -> (tag as ByteArrayTag).asByteArray()
+            7 -> (tag as ByteArrayTag).asByteArray
             8 -> (tag as StringTag).asString()
-            9 -> (tag as ListTag).asList()
-            10 -> (tag as CompoundTag).asCompound()
-            11 -> (tag as IntArrayTag).asIntArray()
-            12 -> (tag as LongArrayTag).asLongArray()
-            else -> {
-                Bukkit.getLogger().warning("Unknown NBT tag type: ${tag.id}")
-                null
+            9 -> {
+                val listTag = tag as ListTag
+                val list = mutableListOf<Any?>()
+                for (element in listTag) {
+                    list.add(fromTag(element))
+                }
+                list
             }
+            10 -> {
+                val compoundTag = tag as CompoundTag
+                val map = mutableMapOf<String, Any?>()
+                for (key in compoundTag.keySet()) {
+                    compoundTag.get(key)?.let { map[key] = fromTag(it) }
+                }
+                map
+            }
+            11 -> (tag as IntArrayTag).asIntArray
+            12 -> (tag as LongArrayTag).asLongArray
+            else -> null
         }
     }
 
     fun InputValueList.toCompoundTag(): CompoundTag {
         val compound = CompoundTag()
         for (value in this.list) {
-            val tag = when (val data = value.value) {
-                is Byte -> ByteTag.valueOf(data)
-                is Short -> ShortTag.valueOf(data)
-                is Int -> IntTag.valueOf(data)
-                is Long -> LongTag.valueOf(data)
-                is Float -> FloatTag.valueOf(data)
-                is Double -> DoubleTag.valueOf(data)
-                is String -> StringTag.valueOf(data)
-                is ByteArray -> ByteArrayTag(data)
-                is IntArray -> IntArrayTag(data)
-                is LongArray -> LongArrayTag(data)
-                is List<*> -> {
-                    val tagList = ListTag()
-                    data.forEach { item ->
-                        when (item) {
-                            is String -> tagList.add(StringTag.valueOf(item))
-                            is Int -> tagList.add(IntTag.valueOf(item))
-                            is Byte -> tagList.add(ByteTag.valueOf(item))
-                            is Short -> tagList.add(ShortTag.valueOf(item))
-                            is Long -> tagList.add(LongTag.valueOf(item))
-                            is Float -> tagList.add(FloatTag.valueOf(item))
-                            is Double -> tagList.add(DoubleTag.valueOf(item))
-                        }
-                    }
-                    tagList
-                }
-
-                is Map<*, *> -> {
-                    val subCompound = CompoundTag()
-                    data.forEach { (k, v) ->
-                        if (k is String && v is String) {
-                            subCompound.put(k, StringTag.valueOf(v))
-                        }
-                    }
-                    subCompound
-                }
-
-                else -> {
-                    Bukkit.getLogger().warning("Unsupported input value type: ${data.javaClass.simpleName}")
-                    null
-                }
+            val tag = toTag(value.value)
+            if (tag != null) {
+                compound.put(value.key, tag)
+            } else {
+                Bukkit.getLogger().warning("Unsupported input value type: ${value.value.javaClass.simpleName} for key ${value.key}")
             }
-
-            if (tag != null) compound.put(value.key, tag)
         }
         return compound
+    }
+
+    private fun toTag(value: Any): Tag? {
+        return when (value) {
+            is Byte -> ByteTag.valueOf(value)
+            is Short -> ShortTag.valueOf(value)
+            is Int -> IntTag.valueOf(value)
+            is Long -> LongTag.valueOf(value)
+            is Float -> FloatTag.valueOf(value)
+            is Double -> DoubleTag.valueOf(value)
+            is String -> StringTag.valueOf(value)
+            is ByteArray -> ByteArrayTag(value)
+            is IntArray -> IntArrayTag(value)
+            is LongArray -> LongArrayTag(value)
+            is List<*> -> {
+                val listTag = ListTag()
+                value.forEach { item ->
+                    if (item != null) {
+                        toTag(item)?.let { listTag.add(it) }
+                    }
+                }
+                listTag
+            }
+            is Map<*, *> -> {
+                val compoundTag = CompoundTag()
+                value.forEach { (key, value) ->
+                    if (key is String && value != null) {
+                        toTag(value)?.let { compoundTag.put(key, it) }
+                    }
+                }
+                compoundTag
+            }
+            else -> null
+        }
     }
 
 }

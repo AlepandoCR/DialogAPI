@@ -20,7 +20,7 @@ class DialogInventory {
     private var buttons = mutableListOf<Button>()
     private val plugin = DialogAPI.plugin!!
     private val inventoryButtons = mutableMapOf<UUID, List<Button>>()
-    val inputResponses = mutableMapOf<Component, Button>()
+    val inputResponses = mutableMapOf<String, String>()
 
     fun parse(player: Player, dialog: Dialog) {
         openInventoryForDialog(player, dialog)
@@ -110,16 +110,6 @@ class DialogInventory {
             Button.fromNMS(dialog.yesButton),
             Button.fromNMS(dialog.noButton)
         )
-    }
-
-    private fun getResourceLocationFromDialog(dialog: Dialog, inputKey: String): ResourceLocation {
-        val defaultNamespace = "inventory_gui"
-        return when (dialog) {
-            is MultiActionDialog -> dialog.buttons.firstOrNull()?.action?.get()?.resourceLocation
-            is ConfirmationDialog -> dialog.yesButton.let { Button.fromNMS(it).action.get().resourceLocation }
-            is NoticeDialog -> dialog.button.action.get().resourceLocation
-            else -> null
-        } ?: ResourceLocation(defaultNamespace, inputKey)
     }
 
     fun clearInputResponses() {
