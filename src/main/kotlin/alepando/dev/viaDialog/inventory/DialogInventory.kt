@@ -7,7 +7,7 @@ import alepando.dev.dialogapi.factory.input.Input
 import alepando.dev.dialogapi.types.*
 import alepando.dev.dialogapi.util.DynamicListener
 import alepando.dev.viaDialog.factory.InventoryFactory
-import alepando.dev.viaDialog.guis.SignInputHandler
+import alepando.dev.viaDialog.guis.AnvilInputHandler
 import alepando.dev.viaDialog.listeners.InventoryListener
 import org.bukkit.entity.Player
 import java.util.*
@@ -54,7 +54,7 @@ class DialogInventory {
         button: Button,
         dialog: Dialog
     ) {
-        SignInputHandler().openSign(player, list, button, dialog, this, input)
+        AnvilInputHandler().openAnvil(player, list, button, dialog, this, input)
     }
 
     private fun openInventoryForDialog(player: Player, dialog: Dialog) {
@@ -67,7 +67,7 @@ class DialogInventory {
         val itemButtons = factory.buttonItems
 
         val listener = DynamicListener(plugin).apply {
-            setListener(InventoryListener(buttons, this, dialog, this@DialogInventory,itemButtons))
+            setListener(InventoryListener(buttons, this, dialog, this@DialogInventory, itemButtons))
         }
         listener.start()
         DialogAPI.log("[Listener] InventoryListener started")
@@ -89,7 +89,7 @@ class DialogInventory {
         val exitButton = dialog.exitButton
         return buildList {
             addAll(dialog.buttons)
-            if(exitButton.isPresent){
+            if (exitButton.isPresent) {
                 add(exitButton.get())
             }
         }.toMutableList()
