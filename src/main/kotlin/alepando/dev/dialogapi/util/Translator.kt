@@ -29,6 +29,10 @@ internal object Translator {
         return PaperAdventure.asVanilla(component)
     }
 
+    fun String.toComponent(): Component{
+        return Component.text(this)
+    }
+
     fun Component.toNMS(): NMSComponent{
         return PaperAdventure.asVanilla(this)
     }

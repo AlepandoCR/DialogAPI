@@ -3,15 +3,15 @@ package alepando.dev.viaDialog.inventory
 import alepando.dev.dialogapi.DialogAPI
 import alepando.dev.dialogapi.factory.Dialog
 import alepando.dev.dialogapi.factory.button.Button
-import alepando.dev.dialogapi.factory.data.ResourceLocation
 import alepando.dev.dialogapi.factory.input.Input
+import alepando.dev.dialogapi.factory.input.types.BookInput
 import alepando.dev.dialogapi.types.*
 import alepando.dev.dialogapi.util.DynamicListener
 import alepando.dev.viaDialog.factory.InventoryFactory
 import alepando.dev.viaDialog.guis.AnvilGUI
+import alepando.dev.viaDialog.guis.BookInputHandler
 import alepando.dev.viaDialog.listeners.AnvilListener
 import alepando.dev.viaDialog.listeners.InventoryListener
-import net.kyori.adventure.text.Component
 import org.bukkit.entity.Player
 import java.util.*
 
@@ -57,14 +57,20 @@ class DialogInventory {
         button: Button,
         dialog: Dialog
     ) {
-        val inventory = AnvilGUI().create(player, input)
-
-        val listener = DynamicListener(plugin).apply {
-            setListener(AnvilListener(player, this, list, button, this@DialogInventory, input, dialog))
+        when (input) {
+            is BookInput -> {
+                BookInputHandler().giveBook(player, input, list, button, dialog, this, DialogAPI.plugin!!)
+            }
+            else -> {
+                val inventory = AnvilGUI().create(player, input)
+                val listener = DynamicListener(plugin).apply {
+                    setListener(AnvilListener(player, this, list, button, this@DialogInventory, input, dialog))
+                }
+                listener.start()
+                DialogAPI.log("[Listener] AnvilListener started")
+                player.openInventory(inventory)
+            }
         }
-        listener.start()
-        DialogAPI.log("[Listener] AnvilListener started")
-        player.openInventory(inventory)
     }
 
     private fun openInventoryForDialog(player: Player, dialog: Dialog) {

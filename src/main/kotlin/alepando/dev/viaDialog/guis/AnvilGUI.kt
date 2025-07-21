@@ -10,6 +10,7 @@ import org.bukkit.event.inventory.InventoryType
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 
+@Deprecated("Use BookInputHandler instead")
 class AnvilGUI {
 
     fun create(player: Player, input: Input<*>): Inventory {

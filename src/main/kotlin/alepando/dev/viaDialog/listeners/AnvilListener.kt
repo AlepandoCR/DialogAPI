@@ -21,6 +21,7 @@ import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryType
 import org.bukkit.event.inventory.PrepareAnvilEvent
 
+@Deprecated("Use BookInputListener instead")
 class AnvilListener(
     private val player: Player,
     private val dynamicListener: DynamicListener,
