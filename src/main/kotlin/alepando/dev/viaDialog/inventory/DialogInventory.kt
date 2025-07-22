@@ -7,8 +7,8 @@ import alepando.dev.dialogapi.factory.input.Input
 import alepando.dev.dialogapi.types.*
 import alepando.dev.dialogapi.util.DynamicListener
 import alepando.dev.viaDialog.factory.InventoryFactory
-import alepando.dev.viaDialog.guis.AnvilInputHandler
 import alepando.dev.viaDialog.listeners.InventoryListener
+import alepando.dev.viaDialog.packet.AnvilInputPacketHandler
 import org.bukkit.entity.Player
 import java.util.*
 
@@ -54,7 +54,18 @@ class DialogInventory {
         button: Button,
         dialog: Dialog
     ) {
-        AnvilInputHandler().openAnvil(player, list, button, dialog, this, input)
+        val dynamicListener = DynamicListener(DialogAPI.plugin!!)
+        dynamicListener.start()
+
+        AnvilInputPacketHandler(
+            dynamicListener,
+            list,
+            button,
+            dialog,
+            this,
+            input,
+            player
+        ).openAnvil()
     }
 
     private fun openInventoryForDialog(player: Player, dialog: Dialog) {

@@ -5,14 +5,17 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import net.minecraft.nbt.*
+import org.bukkit.Material
 import org.bukkit.NamespacedKey
+import org.bukkit.craftbukkit.inventory.CraftItemStack
 import org.bukkit.craftbukkit.persistence.CraftPersistentDataContainer
 import org.bukkit.craftbukkit.persistence.CraftPersistentDataTypeRegistry
+import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataContainer
 import org.bukkit.persistence.PersistentDataType
 import org.bukkit.plugin.Plugin
 import net.minecraft.network.chat.Component as NMSComponent
-
+import net.minecraft.world.item.ItemStack as NMSItemStack
 
 /**
  * Utility object for translating Adventure [Component] instances to NMS (Net Minecraft Server) [NMSComponent] instances.
@@ -67,6 +70,10 @@ internal object Translator {
         }
 
         return list
+    }
+
+    fun ItemStack.createNMSItem(): NMSItemStack {
+        return CraftItemStack.asNMSCopy(this)
     }
 
 
