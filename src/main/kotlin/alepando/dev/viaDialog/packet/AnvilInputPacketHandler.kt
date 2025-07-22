@@ -34,38 +34,33 @@ class AnvilInputPacketHandler(
 
     fun openAnvil() {
         val nmsPlayer = (player as CraftPlayer).handle as ServerPlayer
+
         val containerId = nmsPlayer.nextContainerCounter()
 
         val title = Component.literal(input.label.string)
 
-        // Crear el menu yunque con acceso al nivel
         val menu = AnvilMenu(
             containerId,
             nmsPlayer.inventory,
             ContainerLevelAccess.create(nmsPlayer.level(), nmsPlayer.blockPosition())
         )
 
-        // Crear ítem a renombrar
+        val stateId = menu.incrementStateId()
+
         val item = createDefaultItem()
-
-        // Obtener un stateId válido
-        val stateId = nmsPlayer.id
-
-        // Poner el ítem en el slot 0 (el que se puede renombrar)
         menu.setItem(0, stateId, item)
 
-        // Asignar el nuevo contenedor al jugador
+        menu.checkReachable = false
+
         nmsPlayer.containerMenu = menu
 
-        // Enviar el paquete para abrir el menú
         nmsPlayer.connection.send(ClientboundOpenScreenPacket(containerId, MenuType.ANVIL, title))
 
-        // Inicializar la sincronización de items
         nmsPlayer.initMenu(menu)
 
-        // Inyectar listener
-        injectRenamePacketListener(nmsPlayer)
+        injectAnvilClickListener(nmsPlayer)
     }
+
 
     private fun createDefaultItem(): NMSItemStack {
         val item = ItemStack(Material.PAPER)
@@ -74,13 +69,13 @@ class AnvilInputPacketHandler(
     }
 
 
-    private fun injectRenamePacketListener(nmsPlayer: ServerPlayer) {
+    private fun injectAnvilClickListener(nmsPlayer: ServerPlayer) {
         val channel = nmsPlayer.connection.connection.channel
 
         channel.pipeline().addBefore(
             "packet_handler",
             "anvil_input_listener_${player.uniqueId}",
-            AnvilRenameHandler(player.uniqueId) { rename ->
+            AnvilClickHandler(player) { rename ->
                 handleRename(rename)
             }
         )
@@ -98,13 +93,13 @@ class AnvilInputPacketHandler(
             button.action.ifPresent { action ->
                 val packet = PacketBuilder.build(action.resourceLocation, dialogInventory.inputResponses.toInputValueList())
                 PlayerDialogInteractionEvent(player, packet).callEvent()
+                player.closeInventory()
             }
         } else {
             dialogInventory.handleInputsSequentially(player, dialog, list, button)
         }
 
         dynamicListener.stop()
-        player.closeInventory()
     }
 
 }

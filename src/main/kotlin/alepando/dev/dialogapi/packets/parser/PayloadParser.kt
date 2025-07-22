@@ -1,5 +1,6 @@
 package alepando.dev.dialogapi.packets.parser
 
+import alepando.dev.dialogapi.DialogAPI
 import alepando.dev.dialogapi.util.InputValue
 import alepando.dev.dialogapi.util.InputValueList
 import net.minecraft.nbt.*
@@ -29,11 +30,14 @@ internal object PayloadParser {
 
         for (key in compound.keySet()) {
             val tag = compound.get(key) ?: continue
-            val value = fromTag(tag)
+            var value = fromTag(tag)
             if (value != null) {
+                if(value is Optional<*>){
+                    if(value.isPresent) value = value.get()!!
+                }
                 list.add(InputValue(value, key))
             } else {
-                Bukkit.getLogger().warning("Unknown NBT tag type: ${tag.id} for key $key")
+                DialogAPI.log("Unknown NBT tag type: ${tag.id} for key $key")
             }
         }
 

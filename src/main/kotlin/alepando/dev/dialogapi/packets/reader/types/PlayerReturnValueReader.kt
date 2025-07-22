@@ -22,7 +22,7 @@ object PlayerReturnValueReader: InputReader {
      */
     override fun task(player: Player, values: InputValueList) {
         for (input in values.list) {
-            player.sendMessage("${input.key}: ${input.key}")
+            player.sendMessage("${input.key}: ${input.value}")
         }
     }
 }

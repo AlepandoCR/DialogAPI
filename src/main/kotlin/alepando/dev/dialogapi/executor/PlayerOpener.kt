@@ -20,10 +20,10 @@ object PlayerOpener{
      */
     fun Player.openDialog(dialog: Dialog) {
         val protocolVersion = this.getVersion()
-        if (protocolVersion < 765) {
-            DialogInventory().parse(this, dialog)
-            return
-        }
+//        if (protocolVersion < 765) {
+//            DialogInventory().parse(this, dialog)
+//            return
+//        }
 
         val craftPlayer = player as CraftPlayer
         val nmsPlayer = craftPlayer.handle

@@ -25,7 +25,8 @@ class KeyedAction(
      * @return An [Optional] containing the NMS equivalent of this action.
      */
     override fun toNMS(): Optional<Action> {
-        return Optional.of(CustomAll(resourceLocation.toNMS(), Optional.of(additions.get().container.toCompoundTag())))
+        if(additions.isPresent) return Optional.of(CustomAll(resourceLocation.toNMS(), Optional.of(additions.get().container.toCompoundTag())))
+        return Optional.of(CustomAll(resourceLocation.toNMS(), Optional.empty()))
     }
 
     companion object {
