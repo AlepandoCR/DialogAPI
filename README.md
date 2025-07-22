@@ -36,12 +36,31 @@
 
 ## ✨ Features
 
+
 -    Kotlin-first builder pattern for intuitive dialog creation.
 -    Supports all Vanilla dialog types: `MultiAction`, `List`, `Links`, `Notice`.
 -    Custom actions via Mojang’s native `ServerboundCustomClickActionPacket` system.
 -    Robust input reading: text, numbers (including ranges), multiline text, boolean toggles, and single-choice options.
 -    Flexible dialog bodies: plain text messages and item displays.
 -    Easy integration with Paper events and plugin lifecycle.
+-   > 💡 **New** ViaDialog
+
+---
+
+
+## 🤔 What is ViaDialog?
+
+`ViaDialog` is a compatibility layer within DialogAPI designed to deliver a functional, albeit simplified, dialog experience to players on older Minecraft clients (pre-1.21.6).
+
+When DialogAPI detects that a player cannot receive the native dialog, it seamlessly switches to using `ViaDialog`. This module translates the dialog's structure—buttons, text, and inputs—into a familiar inventory interface.
+
+### How It Works:
+
+*   **Inventory as UI**: Buttons are represented as items in a chest.
+*   **Anvil for Input**: For text input, players are prompted with an Anvil GUI.
+*   **Packet Handling**: It uses packet listeners to capture player interactions and translate them back into the standard `DialogAPI` events.
+
+While this fallback doesn't replicate the native look and feel, it ensures that your dialog-based features remain accessible to a wider range of players.
 
 ---
 
