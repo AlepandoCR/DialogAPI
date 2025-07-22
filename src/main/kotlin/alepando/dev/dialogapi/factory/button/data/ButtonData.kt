@@ -1,6 +1,7 @@
 package alepando.dev.dialogapi.factory.button.data
 
 import alepando.dev.dialogapi.factory.Wrapper
+import alepando.dev.dialogapi.util.Translator
 import net.minecraft.network.chat.Component
 import net.minecraft.server.dialog.CommonButtonData
 import java.util.*
@@ -13,7 +14,7 @@ import java.util.*
  * @property tooltip The tooltip of the button.
  */
 class ButtonData(
-    private val label: Component,
+    val label: Component,
     private val width: Int,
     private val tooltip: Optional<Component> = Optional.empty()
 ): Wrapper<CommonButtonData> {
@@ -23,5 +24,14 @@ class ButtonData(
      */
     override fun toNMS(): CommonButtonData{
         return CommonButtonData(label,tooltip,width)
+    }
+
+    companion object {
+        fun fromNMS(buttonData: CommonButtonData): ButtonData {
+            val label = buttonData.label
+            val width = buttonData.width
+            val tooltip = buttonData.tooltip
+            return ButtonData(label, width, tooltip)
+        }
     }
 }

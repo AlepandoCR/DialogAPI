@@ -1,5 +1,6 @@
 package alepando.dev.dialogapi.util
 
+import alepando.dev.dialogapi.DialogAPI
 import org.bukkit.event.HandlerList
 import org.bukkit.event.Listener
 import org.bukkit.plugin.Plugin
@@ -17,6 +18,7 @@ class DynamicListener(
     private var activeListener = false
     private var listener: Listener? = null
 
+    constructor() : this(DialogAPI.plugin!!)
     /**
      * Unregisters the current listener from Bukkit's event system.
      * Sets [activeListener] to false.

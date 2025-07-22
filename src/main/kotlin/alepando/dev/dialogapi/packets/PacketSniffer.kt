@@ -1,6 +1,6 @@
 package alepando.dev.dialogapi.packets
 
-import alepando.dev.dialogapi.packets.reader.ReaderManager
+import alepando.dev.dialogapi.executor.events.PlayerDialogInteractionEvent
 import io.netty.channel.ChannelDuplexHandler
 import io.netty.channel.ChannelHandlerContext
 import net.minecraft.network.Connection
@@ -42,8 +42,7 @@ internal object PacketSniffer {
         val handler = object : ChannelDuplexHandler() {
             override fun channelRead(ctx: ChannelHandlerContext, msg: Any) {
                 if (msg is ServerboundCustomClickActionPacket) {
-                    ReaderManager.peekActions(player, msg, plugin)
-                    ReaderManager.peekInputs(player, msg)
+                    PlayerDialogInteractionEvent(player,msg,plugin).callEvent()
                 }
                 super.channelRead(ctx, msg)
             }

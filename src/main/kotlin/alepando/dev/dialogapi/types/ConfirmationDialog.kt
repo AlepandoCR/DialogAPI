@@ -22,8 +22,8 @@ typealias NMSConfirmationDialog = net.minecraft.server.dialog.ConfirmationDialog
  * @param dynamicListener An optional [DynamicListener] for handling Bukkit events related to this dialog.
  */
 class ConfirmationDialog(
-    private val yesButton: ActionButton,
-    private val noButton: ActionButton, data: DialogData,
+    val yesButton: ActionButton,
+    val noButton: ActionButton, data: DialogData,
     dynamicListener: Optional<DynamicListener> = Optional.empty()
 ): Dialog(data, dynamicListener){
 
