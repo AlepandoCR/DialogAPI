@@ -326,24 +326,17 @@ class DialogListener : Listener {
     fun onDialogInteraction(event: PlayerDialogInteractionEvent) {
         val player = event.player
         val plugin = event.plugin
-
-        when (event.id.toString()) {
-            "key:custom_action" -> {
-                event.action(object : CustomAction() {
-                    override fun task(player: Player, plugin: Plugin) {
-                        player.sendMessage("Custom action executed!")
-                    }
-                })
-            }
-            "key:input_form" -> {
-                event.read(object : InputReader {
-                    override fun task(player: Player, values: InputValueList) {
-                        val feedback = values.getValue("feedback_text")
-                        player.sendMessage("You submitted: $feedback")
-                    }
-                })
-            }
+        val resourceLocation = ResourceLocation("path","namespace")
+        
+        if(event.id == resourceLocation){
+            event.action(object : CustomAction() {
+                override fun task(player: Player, plugin: Plugin) {
+                    player.sendMessage("Custom action executed!")
+                }
+            })
         }
+        
+        // also use PlayerDialogInteractionEvent#read with an InputReader
     }
 }
 ```
@@ -357,9 +350,11 @@ Input readers (`InputReader`) are essential when your dialog includes input fiel
 event.read(object : InputReader {
     override fun task(player: Player, values: InputValueList) {
         // InputValueList offers a getter based on keys.
-        val feedback = values.getValue("feedback_text")
-        val quantity = values.getValue("quantity_input")
+        val feedback = values.get("key")
+        val quantity = values.get("key") // Key as the same key set on InputBuilders (See bellow)
 
+        if(feedback == null || quantity == null) return
+        
         player.sendMessage("Feedback: $feedback, Quantity: $quantity")
     }
 })
