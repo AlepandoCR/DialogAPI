@@ -2,6 +2,7 @@
 
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/AlepandoCR/DialogAPI)](https://github.com/AlepandoCR/DialogAPI/releases/latest)
 [![JitPack](https://jitpack.io/v/AlepandoCR/DialogAPI.svg)](https://jitpack.io/#AlepandoCR/DialogAPI)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/AlepandoCR/DialogAPI)
 
 **DialogAPI** is a developer-focused API for easily testing and extending Minecraft's new native dialogs (1.21.6), specifically leveraging the `ServerboundCustomClickActionPacket`. It offers a full Kotlin-based wrapper for creating rich, interactive dialogs with buttons, inputs, and custom actions for Paper plugins.
 
