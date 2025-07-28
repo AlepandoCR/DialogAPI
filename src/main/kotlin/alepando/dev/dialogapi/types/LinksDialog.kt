@@ -20,7 +20,7 @@ typealias NMSServerLinksDialog = ServerLinksDialog
  */
 class LinksDialog(
     data: DialogData,
-    private val exitButton: Optional<Button>,
+    val exitButton: Optional<Button>,
     private val columns: Int = 2,
     private val buttonWidth: Int = 150
 ) : Dialog(data) {

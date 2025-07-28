@@ -23,8 +23,8 @@ typealias NMSDialogListDialog = DialogListDialog
  */
 class ListDialog(
     data: DialogData,
-    private val dialogs: List<Dialog>,
-    private val exitButton: Optional<Button>,
+    val dialogs: List<Dialog>,
+    val exitButton: Optional<Button>,
     private val columns: Int = 2,
     private val buttonWidth: Int = 150
 ) : Dialog(data){

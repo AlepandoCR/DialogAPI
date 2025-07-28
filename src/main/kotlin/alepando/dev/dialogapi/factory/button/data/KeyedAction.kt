@@ -14,7 +14,7 @@ import java.util.*
  * @property resourceLocation The resource location identifying this action.
  */
 class KeyedAction(
-    private val resourceLocation: ResourceLocation,
+    val resourceLocation: ResourceLocation,
     private val additions: Optional<DataContainer>
 ):Wrapper<Optional<Action>> {
 
@@ -25,7 +25,17 @@ class KeyedAction(
      * @return An [Optional] containing the NMS equivalent of this action.
      */
     override fun toNMS(): Optional<Action> {
-        return Optional.of(CustomAll(resourceLocation.toNMS(), Optional.of(additions.get().container.toCompoundTag())))
+        if(additions.isPresent) return Optional.of(CustomAll(resourceLocation.toNMS(), Optional.of(additions.get().container.toCompoundTag())))
+        return Optional.of(CustomAll(resourceLocation.toNMS(), Optional.empty()))
+    }
+
+    companion object {
+        fun fromNMS(action: Action): KeyedAction {
+            val customAction = action as CustomAll
+            val resourceLocation = ResourceLocation.fromNMS(customAction.id)
+            val additions = if (customAction.additions.isPresent) Optional.of(DataContainer.fromNMS(customAction.additions.get())) else Optional.empty<DataContainer>()
+            return KeyedAction(resourceLocation, additions)
+        }
     }
 
 }

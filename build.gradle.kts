@@ -15,11 +15,13 @@ repositories {
     maven("https://repo.opencollab.dev/main/") {
         name = "opencollab-snapshot"
     }
+    maven("https://repo.viaversion.com")
 }
 
 dependencies {
     paperweight.paperDevBundle("1.21.7-R0.1-SNAPSHOT")
     implementation(kotlin("stdlib-jdk8"))
+    compileOnly("com.viaversion:viaversion-api:5.4.1")
 }
 
 val targetJavaVersion = 21

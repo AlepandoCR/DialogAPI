@@ -17,15 +17,14 @@
 - [ Features](#-features)
 - [ How to Use](#-how-to-use)
     - [ Adding the API](#-adding-the-api)
-    - [ API Initialization](#-api-initialization)
+    - [ Listening for Dialog Interactions](#-listening-for-dialog-interactions)
 - [ Building a Simple Dialog](#-building-a-simple-dialog)
     - [ DialogData](#-dialog-data)
     - [ Adding Buttons with Actions](#-adding-buttons-with-actions)
     - [ Creating the Dialog](#-creating-the-dialog)
     - [ Opening a Dialog](#-opening-a-dialog)
 - [ Creating Custom Actions](#creating-custom-actions)
-    - [ Registering an Action](#registering-an-action)
-    - [ Action Implementation](#-action-implementation)
+    - [ Action and Input Handling](#-action-and-input-handling)
     - [ Input Readers](#-input-readers)
     - [ Creating Input Fields](#-creating-input-fields)
 - [ Looking for More Examples?](#-looking-for-more-examples)
@@ -38,12 +37,31 @@
 
 ## ✨ Features
 
+
 -    Kotlin-first builder pattern for intuitive dialog creation.
 -    Supports all Vanilla dialog types: `MultiAction`, `List`, `Links`, `Notice`.
 -    Custom actions via Mojang’s native `ServerboundCustomClickActionPacket` system.
 -    Robust input reading: text, numbers (including ranges), multiline text, boolean toggles, and single-choice options.
 -    Flexible dialog bodies: plain text messages and item displays.
 -    Easy integration with Paper events and plugin lifecycle.
+-   > 💡 **New** ViaDialog
+
+---
+
+
+## 🤔 What is ViaDialog?
+
+`ViaDialog` is a compatibility layer within DialogAPI designed to deliver a functional, albeit simplified, dialog experience to players on older Minecraft clients (pre-1.21.6).
+
+When DialogAPI detects that a player cannot receive the native dialog, it seamlessly switches to using `ViaDialog`. This module translates the dialog's structure—buttons, text, and inputs—into a familiar inventory interface.
+
+### How It Works:
+
+*   **Inventory as UI**: Buttons are represented as items in a chest.
+*   **Anvil for Input**: For text input, players are prompted with an Anvil GUI.
+*   **Packet Handling**: It uses packet listeners to capture player interactions and translate them back into the standard `DialogAPI` events.
+
+While this fallback doesn't replicate the native look and feel, it ensures that your dialog-based features remain accessible to a wider range of players.
 
 ---
 
@@ -59,27 +77,40 @@ repositories {
 }
 
 dependencies {
-    implementation("com.github.AlepandoCR:DialogAPI:v1.2.0") 
+    implementation("com.github.AlepandoCR:DialogAPI:Tag") 
 }
 ```
 > 💡 **Tip:** Always check [JitPack](https://jitpack.io/#AlepandoCR/DialogAPI) or the [GitHub Releases page](https://github.com/AlepandoCR/DialogAPI/releases) for the latest version number.
 
-### 🔧 API Initialization
-
-Call this function in your plugin's `onEnable` method to initialize the API internals and register the required packet listeners. This enables features like `CustomActions` and `InputReaders`, which rely on packet-level data.
-
-> ⚠️ **Crucial Step:** If you don't call `DialogApi.initialize(this)`, dialogs will still open and render correctly, but essential features like button actions (`CustomAction`) and input field processing (`InputReader`) **will not function**.
+# 👂 Listening for Dialog Interactions
+To respond to user interactions with your dialogs, you need to listen for PlayerDialogInteractionEvent. This is how you hook into the DialogAPI event system:
 
 ```kotlin
 // In your main plugin class
 override fun onEnable() {
-    // Initialize DialogAPI, passing your plugin instance
-    DialogApi.initialize(this) 
-    
-    // Your other onEnable logic...
-    logger.info("MyPlugin has been enabled and DialogAPI is initialized!")
+DialogApi.initialize() // ✅ Required: Initializes DialogAPI
+server.pluginManager.registerEvents(DialogListener(), this) // 🔄 Register your listener
+logger.info("MyPlugin has been enabled and the DialogAPI listener is registered!")
+}
+Next, implement the listener to handle dialog interactions:
+```
+```kotlin
+// Your listener class
+class DialogListener : Listener {
+
+    @EventHandler
+    fun onDialogInteraction(event: PlayerDialogInteractionEvent) {
+        val player = event.player
+
+        // 🧠 Your logic here!
+        // Example: give player a reward or open another GUI
+        player.sendMessage("You interacted with: ${event.id}")
+        
+        // 📌 See the "Creating Custom Actions" section to define your own behavior
+    }
 }
 ```
+This listener is essential if you want to create dynamic responses, chain dialogs, or implement custom logic when players interact with GUI buttons created using DialogAPI.
 
 ---
 
@@ -183,7 +214,7 @@ val testButton = Button(
     Optional.of(KeyedAction(resourceLocation)) // Associates the button with the custom action
 )
 ```
-> ℹ️ **Note:** For this button to work, you'll need to register a `CustomAction` with the `resourceLocation` defined above. See the [ Registering an Action](#️-registering-an-action) section for details.
+> ℹ️ **Note:** The `resourceLocation` is used to identify the button in the `PlayerDialogInteractionEvent` listener.
 
 ### 🧱 Creating the Dialog
 
@@ -302,77 +333,51 @@ DialogAPI also supports more specialized dialog types for advanced use cases:
 
 ## Creating Custom Actions
 
-Custom actions are the heart of interactive dialogs. They allow you to execute specific server-side logic when a player interacts with a dialog element (e.g., clicks a button).
+Custom actions are the heart of interactive dialogs. They allow you to execute specific server-side logic when a player interacts with a dialog element. This is now handled within the `PlayerDialogInteractionEvent` listener.
 
-### Registering an Action
+### Action and Input Handling
 
-First, you need to register your custom action with a unique `ResourceLocation` key. This key is crucial as it links the client-side dialog interaction (like a button click) to your server-side `CustomAction` implementation.
-
-```kotlin
-val killPlayerNamespace = "dialog" // Example namespace
-val killPlayerPath = "damage_player" // Example path
-val killPlayerKey = ResourceLocation(killPlayerNamespace, killPlayerPath)
-
-try {
-    CustomKeyRegistry.register(
-        killPlayerKey,        // The unique key for this action
-        KillPlayerAction,     // Your CustomAction implementation (see below)
-        PlayerReturnValueReader // Your InputReader implementation, you can also register an action without the Reader, although you might not be able to register the reader to the same key later on
-    )
-} catch (e: IllegalStateException) {
-    // Handle cases where the key might already be registered
-    // This message is good for debugging during development
-    player.sendMessage("Note: Kill player key was already registered, perhaps by another part of your plugin or a different plugin: ${e.message}")
-}
-```
-> 💡 **Best Practice:** Register all your custom keys during your plugin's `onEnable` phase to ensure they are available when needed and to handle any registration conflicts early.
-
-### ⚙️ Action Implementation
-
-Create a class (or object for singletons) that extends `CustomAction` and implement the `task` method. This method contains the server-side logic that will be executed when the action is triggered.
+In your `PlayerDialogInteractionEvent` listener, you can check the `id` of the interaction and then execute a `CustomAction` or read input using an `InputReader`.
 
 ```kotlin
-object KillPlayerAction : CustomAction() {
-    override fun task(player: Player, plugin: Plugin) {
-        // Optional: Start a dynamic listener if needed for this action
-        dynamicListener?.start()
-        // Optional: Stop the dynamic listener after a delay or when the action is complete
-        dynamicListener?.stopListenerAfter(20L) // Time is based ticks
+class DialogListener : Listener {
+
+    @EventHandler
+    fun onDialogInteraction(event: PlayerDialogInteractionEvent) {
+        val player = event.player
+        val plugin = event.plugin
+        val resourceLocation = ResourceLocation("path","namespace")
         
-        player.damage(5.0) // Example action: damage the player
-    }
-
-    // Optional: Define a Bukkit event listener specific to this action
-    // Custom listeners are not required for CustomActions, but it's an option.
-    // Listener also includes the player that triggered the action 
-    override fun listener(dialogPlayer: Player): Listener {
-        return object : Listener {
-            @EventHandler
-            fun onPlayerDeath(event: PlayerDeathEvent) {
-                if (event.player == dialogPlayer) {
-                    dialogPlayer.sendMessage("you died during your dialog")
+        if(event.id == resourceLocation){
+            event.action(object : CustomAction() {
+                override fun task(player: Player, plugin: Plugin) {
+                    player.sendMessage("Custom action executed!")
                 }
-            }
+            })
         }
+        
+        // also use PlayerDialogInteractionEvent#read with an InputReader
     }
 }
 ```
-> ℹ️ The `plugin: Plugin` parameter in `task` refers to your main plugin instance, allowing you to access plugin-specific resources or schedulers, this plugin instance is the same as the one you use to initialize DialogAPI
+> ℹ️ The `plugin: Plugin` parameter in `task` refers to your main plugin instance, allowing you to access plugin-specific resources or schedulers.
 
 ### 📥 Input Readers
 
-Input readers (`InputReader`) are essential when your dialog includes input fields (like text boxes, number inputs, etc.). They are responsible for processing the data submitted by the player from these fields. Each `CustomAction` that handles a dialog submission with inputs can have an associated `InputReader`.
+Input readers (`InputReader`) are essential when your dialog includes input fields. They are responsible for processing the data submitted by the player. You use them within the `read()` method of the `PlayerDialogInteractionEvent`.
 
 ```kotlin
-object PlayerReturnValueReader : InputReader {
-    // InputValueList offers a getter based on keys.
-    // Useful for getting specific values with the key set on Input creation (see below).
+event.read(object : InputReader {
     override fun task(player: Player, values: InputValueList) {
-        for (input in values.list) {
-            player.sendMessage("Received input - Key: ${input.key}, Value: ${input.value}") // Corrected to show input.value
-        }
+        // InputValueList offers a getter based on keys.
+        val feedback = values.get("key")
+        val quantity = values.get("key") // Key as the same key set on InputBuilders (See bellow)
+
+        if(feedback == null || quantity == null) return
+        
+        player.sendMessage("Feedback: $feedback, Quantity: $quantity")
     }
-}
+})
 ```
 
 ### ⌨️ Creating Input Fields
@@ -499,10 +504,10 @@ The core builder and registry patterns (e.g., `CustomKeyRegistry`) are your main
 
 ## 🤝 Contributing
 
- Contributors are welcome! If you'd like to help improve DialogAPI, please follow these steps:
+Contributors are welcome! If you'd like to help improve DialogAPI, please follow these steps:
 
 1.  **🍴 Fork the Repository**: Click the 'Fork' button at the top right of the GitHub page.
-2.  **💻 Clone Your Fork**: `git clone https://github.com/YourUsername/DialogAPI.git` (Replace `YourUsername`)
+2.  **💻 Clone Your Fork**: `git clone https://github.com/AlepandoCR/DialogAPI.git` (Replace `AlepandoCR`)
 3.  **🌿 Create a Branch**: `git checkout -b feature/YourAmazingFeature` or `fix/IssueBeingFixed`. Descriptive branch names are helpful!
 4.  **✍️ Make Your Changes**: Implement your feature, bug fix, or documentation improvement.
     *   Adhere to the existing code style (primarily Kotlin conventions).
@@ -530,14 +535,7 @@ Your contributions, big or small, are highly appreciated and help make DialogAPI
 ## ❓ Troubleshooting / FAQ
 
 **Q: My dialog opens, but buttons with `CustomAction` or input fields don't work. What's wrong?**
-A: ⚠️ The most common reason is forgetting to call `DialogApi.initialize(this)` in your plugin's `onEnable()` method. This step is **crucial** for registering the necessary packet listeners that handle custom actions and input data. Without it, the API won't process clicks or input submissions from the client.
-
-**Q: I'm getting an `IllegalStateException: Key [your_key] is already registered` when trying to register a `CustomKey`.**
-A: This error means the `ResourceLocation` (the key, composed of a namespace and path, e.g., `yourplugin:some_action`) you're trying to use for your `CustomAction` is already in use. This could be by another part of your plugin, or rarely, a different plugin (if namespaces aren't unique).
-*   **Solution:** Ensure your `ResourceLocation` is unique.
-*   **Namespace:** Use your plugin's unique ID (e.g., `myplugin`).
-*   **Path:** Use a descriptive name for the action (e.g., `open_main_menu`, `submit_player_report`).
-*   You can defensively check if a key is registered before attempting to register it, or wrap the registration call in a try-catch block to handle this specific exception gracefully (perhaps logging a warning).
+A: ⚠️ The most common reason is forgetting to initialize your `DialogApi.initialize()` in your plugin's `onEnable()` method. This step is **crucial** for handling custom actions and input data. Without it, the API won't process clicks or input submissions from the client.
 
 **Q: How do I choose a good `ResourceLocation` for my custom actions?**
 A: A `ResourceLocation` has two string parts: `namespace` and `path`.
@@ -557,7 +555,7 @@ A: 🔗 The best places to check for the latest version are:
 **Q: My input fields (text, number, etc.) are not returning the values I expect in my `InputReader`. What should I check?**
 A: 🕵️‍♀️ Double-check these common points:
 1.  **Unique Input Keys:** Ensure that each input field within your dialog was created with a **unique `key` string** (e.g., `TextInputBuilder().key("player_name_input")`, `NumberRangeInputBuilder().key("item_quantity")`). This `key` is how you identify the input's value.
-2.  **Correct `InputReader` Registration:** Verify that the `CustomAction` responsible for handling the dialog submission is correctly registered with the appropriate `InputReader` instance in the `CustomKeyRegistry.register()` call.
+2.  **Correct `InputReader` Usage:** Verify that you are calling `event.read()` with the correct `InputReader` implementation inside your `PlayerDialogInteractionEvent` listener, and that you are checking for the correct `event.id`.
 3.  **Accessing Values in Reader:** In your `InputReader`'s `task(player: Player, values: InputValueList)` method, make sure you are using the correct key to retrieve the value: `values.getValue("your_exact_input_key")`. You can also iterate through `values.list` and check `input.key` and `input.value` for debugging.
 4.  **Data Types:** Ensure the type of value you're expecting matches what the input field provides (e.g., a `NumberRangeInput` will provide a number, a `BooleanInput` a boolean).
 
@@ -571,8 +569,6 @@ You can find the full license text in the `LICENSE` file in the repository, but 
 
 ```
 MIT License
-
-Copyright (c) [Year] [Your Name/Organization - AlepandoCR for DialogAPI]
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

@@ -10,7 +10,7 @@ import net.minecraft.server.dialog.body.PlainMessage
  *
  * @property contents The contents of the dialog body.
  */
-class PlainMessageDialogBody(width: Int, private val contents: Component) : DialogBody<PlainMessage>(width) {
+class PlainMessageDialogBody(width: Int, val contents: Component) : DialogBody<PlainMessage>(width) {
     /**
      * Converts this dialog body to its NMS equivalent.
      * @return The NMS equivalent of this dialog body.

@@ -1,11 +1,11 @@
 package alepando.dev.dialogapi.factory.data
 
 import alepando.dev.dialogapi.factory.Wrapper
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.ResourceLocation as NMSResourceLocation
 
 /**
  * Represents a resource location, consisting of a namespace and a path.
- * This is a wrapper around Minecraft's [ResourceLocation].
+ * This is a wrapper around Minecraft's [NMSResourceLocation].
  *
  * @property namespace The namespace of the resource location.
  * @property path The path of the resource location.
@@ -13,10 +13,16 @@ import net.minecraft.resources.ResourceLocation
 class ResourceLocation(
     private val namespace: String,
     private val path: String
-): Wrapper<ResourceLocation>  {
+): Wrapper<NMSResourceLocation>  {
     /**
      * Converts this resource location to its NMS equivalent.
-     * @return The NMS [ResourceLocation].
+     * @return The NMS [NMSResourceLocation].
      */
-    override fun toNMS(): ResourceLocation { return ResourceLocation.fromNamespaceAndPath(namespace,path) }
+    override fun toNMS(): NMSResourceLocation { return NMSResourceLocation.fromNamespaceAndPath(namespace,path) }
+
+    companion object {
+        fun fromNMS(location: NMSResourceLocation): ResourceLocation {
+            return ResourceLocation(location.namespace, location.path)
+        }
+    }
 }
